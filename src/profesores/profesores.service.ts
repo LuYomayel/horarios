@@ -19,15 +19,19 @@ export class ProfesoresService {
     return newProfesor.save();
   }
 
-  findAll(params?: FilterProfesorDto) {
+  async findAll(params?: FilterProfesorDto) {
     if (params.limit || params.offset) {
-      console.log(params);
       const filters: FilterQuery<Profesor> = {};
       const { limit, offset } = params;
-      console.log(this.profesorModel.count());
-      return this.profesorModel.find(filters).skip(offset).limit(limit).exec();
+      return await this.profesorModel
+        .find(filters)
+        .skip(offset)
+        .limit(limit)
+        .exec();
     }
-    return this.profesorModel.find().exec();
+    // console.log(this.profesorModel.find().count({}));
+    await this.profesorModel.count();
+    return await this.profesorModel.find().exec();
   }
 
   findOne(id: number) {
