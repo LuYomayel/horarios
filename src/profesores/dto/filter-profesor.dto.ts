@@ -1,14 +1,4 @@
-import {
-  IsString,
-  IsNumber,
-  IsUrl,
-  IsNotEmpty,
-  IsPositive,
-  IsOptional,
-  Min,
-  ValidateIf,
-} from 'class-validator';
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsPositive, IsOptional, Min } from 'class-validator';
 
 export class FilterProfesorDto {
   @IsOptional()
