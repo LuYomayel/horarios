@@ -14,20 +14,20 @@ const API_KEY_PROD = 'PROD1212121SA';
 @Global()
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017'),
-    // MongooseModule.forRootAsync({
-    //   useFactory: (configService: ConfigType<typeof config>) => {
-    //     const { connection, user, password, host, port, dbName } =
-    //       configService.mongo;
-    //     return {
-    //       uri: `${connection}://${host}:${port}`,
-    //       user,
-    //       pass: password,
-    //       dbName,
-    //     };
-    //   },
-    //   inject: [config.KEY],
-    // }),
+    // MongooseModule.forRoot('mongodb://localhost:27017'),
+    MongooseModule.forRootAsync({
+      useFactory: (configService: ConfigType<typeof config>) => {
+        const { connection, user, password, host, port, dbName } =
+          configService.mongo;
+        return {
+          uri: `${connection}://${user}:${password}@${host}/${dbName}`,
+          user,
+          pass: password,
+          dbName,
+        };
+      },
+      inject: [config.KEY],
+    }),
   ],
   providers: [
     {
@@ -39,9 +39,9 @@ const API_KEY_PROD = 'PROD1212121SA';
       useFactory: async (configService: ConfigType<typeof config>) => {
         const { connection, user, password, host, port, dbName } =
           configService.mongo;
-        console.log(configService.mongo);
-        // const uri = `${connection}://${user}:${password}@${host}:${port}/?authSource=admin&readPreference=primary`;
-        const uri = `${connection}://${host}:${port}`;
+        const uri = `${connection}://${user}:${password}@${host}/${dbName}`;
+        console.log(uri);
+        // const uri = `${connection}://${host}:${port}`;
         const client = new MongoClient(uri);
         await client.connect();
         const database = client.db(dbName);
