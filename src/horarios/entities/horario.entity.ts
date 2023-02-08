@@ -1,8 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types, Document } from 'mongoose';
-import { Materia } from '../../materias/entities/materia.entity';
-import { Profesor } from '../../profesores/entities/profesor.entity';
-
+import { Document } from 'mongoose';
 export enum ETurno {
   mañana = 'Mañana',
   tarde = 'Tarde',

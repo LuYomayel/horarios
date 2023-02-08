@@ -29,8 +29,7 @@ export class ProfesoresService {
         .limit(limit)
         .exec();
     }
-    // console.log(this.profesorModel.find().count({}));
-    await this.profesorModel.count();
+
     return await this.profesorModel.find().exec();
   }
 

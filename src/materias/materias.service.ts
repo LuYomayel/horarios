@@ -1,15 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
 import { CreateMateriaDto } from './dto/create-materia.dto';
 import { UpdateMateriaDto } from './dto/update-materia.dto';
+import { Materia } from './entities/materia.entity';
 
 @Injectable()
 export class MateriasService {
-  create(createMateriaDto: CreateMateriaDto) {
-    return 'This action adds a new materia';
+  constructor(
+    @InjectModel(Materia.name) private materiaModel: Model<Materia>,
+    @InjectConnection() private connection: Connection,
+  ) {}
+  async create(createMateriaDto: CreateMateriaDto) {
+    const newMateria = await new this.materiaModel(createMateriaDto);
+    return newMateria.save();
   }
 
-  findAll() {
-    return `This action returns all materias`;
+  async findAll() {
+    return await this.materiaModel.find().exec();
   }
 
   findOne(id: number) {

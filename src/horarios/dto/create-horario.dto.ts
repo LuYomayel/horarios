@@ -5,8 +5,6 @@ import {
   Max,
   Min,
   IsEnum,
-  IsMongoId,
-  IsEmpty,
 } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 

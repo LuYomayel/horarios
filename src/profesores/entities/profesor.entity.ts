@@ -1,7 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import { Horario, HorarioSchema } from '../../horarios/entities/horario.entity';
-import { Materia, MateriaSchema } from '../../materias/entities/materia.entity';
+import { Document } from 'mongoose';
 @Schema()
 export class Profesor extends Document {
   @Prop({ required: true })

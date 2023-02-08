@@ -17,7 +17,7 @@ const API_KEY_PROD = 'PROD1212121SA';
     // MongooseModule.forRoot('mongodb://localhost:27017'),
     MongooseModule.forRootAsync({
       useFactory: (configService: ConfigType<typeof config>) => {
-        const { connection, user, password, host, port, dbName } =
+        const { connection, user, password, host, dbName } =
           configService.mongo;
         return {
           uri: `${connection}://${user}:${password}@${host}/${dbName}`,
@@ -37,7 +37,7 @@ const API_KEY_PROD = 'PROD1212121SA';
     {
       provide: 'MONGO',
       useFactory: async (configService: ConfigType<typeof config>) => {
-        const { connection, user, password, host, port, dbName } =
+        const { connection, user, password, host, dbName } =
           configService.mongo;
         const uri = `${connection}://${user}:${password}@${host}/${dbName}`;
         console.log(uri);

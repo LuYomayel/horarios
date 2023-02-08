@@ -16,13 +16,13 @@ export class MateriasController {
   constructor(private readonly materiasService: MateriasService) {}
 
   @Post()
-  create(@Body() createMateriaDto: CreateMateriaDto) {
-    return this.materiasService.create(createMateriaDto);
+  async create(@Body() createMateriaDto: CreateMateriaDto) {
+    return await this.materiasService.create(createMateriaDto);
   }
 
   @Get()
-  findAll() {
-    return this.materiasService.findAll();
+  async findAll() {
+    return await this.materiasService.findAll();
   }
 
   @Get(':id')
