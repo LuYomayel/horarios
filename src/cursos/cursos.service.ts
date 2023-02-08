@@ -24,6 +24,12 @@ export class CursosService {
     return `This action returns a #${id} curso`;
   }
 
+  async findByAnioAndDivision(anio: number, division: number) {
+    const curso = await this.cursoModel.findOne({ anio, division });
+    if (!curso) return { _id: '' };
+    return curso;
+  }
+
   update(id: number, updateCursoDto: UpdateCursoDto) {
     return `This action updates a #${id} curso`;
   }

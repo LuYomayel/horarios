@@ -9,5 +9,6 @@ import { Curso, CursoSchema } from './entities/curso.entity';
   ],
   controllers: [CursosController],
   providers: [CursosService],
+  exports: [CursosService],
 })
 export class CursosModule {}
