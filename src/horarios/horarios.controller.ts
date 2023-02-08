@@ -16,13 +16,13 @@ export class HorariosController {
   constructor(private readonly horariosService: HorariosService) {}
 
   @Post()
-  create(@Body() createHorarioDto: CreateHorarioDto) {
-    return this.horariosService.create(createHorarioDto);
+  async create(@Body() createHorarioDto: CreateHorarioDto) {
+    return await this.horariosService.create(createHorarioDto);
   }
 
   @Get()
-  findAll() {
-    return this.horariosService.findAll();
+  async findAll() {
+    return await this.horariosService.findAll();
   }
 
   @Get(':id')

@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
 import { CreateHorarioDto } from './dto/create-horario.dto';
 import { UpdateHorarioDto } from './dto/update-horario.dto';
+import { Horario } from './entities/horario.entity';
 
 @Injectable()
 export class HorariosService {
-  create(createHorarioDto: CreateHorarioDto) {
-    return 'This action adds a new horario';
+  constructor(
+    @InjectModel(Horario.name) private horarioModel: Model<Horario>,
+    @InjectConnection() private connection: Connection,
+  ) {}
+
+  async create(createHorarioDto: CreateHorarioDto) {
+    const newHorario = new this.horarioModel(createHorarioDto);
+    return await newHorario.save();
   }
 
-  findAll() {
-    return `This action returns all horarios`;
+  async findAll() {
+    return await this.horarioModel.find().exec();
   }
 
   findOne(id: number) {

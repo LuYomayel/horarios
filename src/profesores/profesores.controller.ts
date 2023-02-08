@@ -12,7 +12,7 @@ import { ProfesoresService } from './profesores.service';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
-
+import { Profesor, ProfesorSchema } from './entities/profesor.entity';
 @Controller('profesores')
 export class ProfesoresController {
   constructor(private readonly profesoresService: ProfesoresService) {}
@@ -23,7 +23,7 @@ export class ProfesoresController {
   }
 
   @Get()
-  findAll(@Query() params: FilterProfesorDto) {
+  findAll(@Query() params: FilterProfesorDto): Promise<Profesor[]> {
     return this.profesoresService.findAll(params);
   }
 

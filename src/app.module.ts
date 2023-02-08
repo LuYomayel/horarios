@@ -10,6 +10,7 @@ import { HorariosModule } from './horarios/horarios.module';
 import { MateriasModule } from './materias/materias.module';
 import { DatabaseModule } from './database/database.module';
 import { environments } from './environment';
+import { CursosModule } from './cursos/cursos.module';
 import config from './config';
 
 @Module({
@@ -24,6 +25,7 @@ import config from './config';
     HorariosModule,
     UsuariosModule,
     DatabaseModule,
+    CursosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

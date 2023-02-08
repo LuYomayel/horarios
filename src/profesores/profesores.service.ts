@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection, FilterQuery } from 'mongoose';
 
-import { Profesor, ProfesorDocument } from './schemas/profesor.schema';
+import { Profesor } from './entities/profesor.entity';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
@@ -10,7 +10,7 @@ import { FilterProfesorDto } from './dto/filter-profesor.dto';
 @Injectable()
 export class ProfesoresService {
   constructor(
-    @InjectModel(Profesor.name) private profesorModel: Model<ProfesorDocument>,
+    @InjectModel(Profesor.name) private profesorModel: Model<Profesor>,
     @InjectConnection() private connection: Connection,
   ) {}
 
@@ -19,7 +19,7 @@ export class ProfesoresService {
     return newProfesor.save();
   }
 
-  async findAll(params?: FilterProfesorDto) {
+  async findAll(params?: FilterProfesorDto): Promise<Profesor[]> {
     if (params.limit || params.offset) {
       const filters: FilterQuery<Profesor> = {};
       const { limit, offset } = params;
