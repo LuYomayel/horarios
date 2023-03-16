@@ -14,7 +14,7 @@ async function bootstrap() {
       },
     }),
   );
-
+  const port = process.env.DATABASE_PORT || 5000;
   const config = new DocumentBuilder()
     .setTitle('API')
     .setDescription('Horarios')
@@ -23,6 +23,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   app.enableCors();
-  await app.listen(3000);
+  await app.listen(port).then(value => `listening to ${port}`);
+  console.log(`La aplicación está corriendo en el puerto ${await app.getUrl()}`);
 }
 bootstrap();
