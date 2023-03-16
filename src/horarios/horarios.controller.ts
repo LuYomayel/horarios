@@ -25,9 +25,13 @@ export class HorariosController {
     return await this.horariosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.horariosService.findOne(+id);
+  @Get(':modulo/:turno/:dia')
+  findOne(
+    @Param('modulo') modulo: number,
+    @Param('turno') turno: string,
+    @Param('dia') dia: string
+  ) {
+    return this.horariosService.findOne(+modulo, turno, dia);
   }
 
   @Patch(':id')

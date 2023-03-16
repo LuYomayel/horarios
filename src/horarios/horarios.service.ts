@@ -21,8 +21,10 @@ export class HorariosService {
     return await this.horarioModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} horario`;
+  async findOne(modulo: number, turno: string, dia: string) {
+    return await this.horarioModel
+      .findOne({ modulo, turno, dia })
+      .exec();
   }
 
   update(id: number, updateHorarioDto: UpdateHorarioDto) {

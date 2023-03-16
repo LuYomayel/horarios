@@ -15,16 +15,18 @@ export class HorarioXCursoService {
     private cursoService: CursosService,
   ) {}
   async create(createHorarioXCursoDto: CreateHorarioXCursoDto) {
+    console.log('DTO: ', createHorarioXCursoDto)
     const newHorarioXCurso = await new this.horarioXCursoModel(
       createHorarioXCursoDto,
     );
+    console.log('new curso: ', newHorarioXCurso)
     return newHorarioXCurso.save();
   }
 
   async findAll() {
     return await this.horarioXCursoModel
       .find()
-      .populate(['materia', 'profesor', 'curso', 'horario'])
+      .populate(['materia', 'profesor', 'curso'])
       .exec();
   }
 
@@ -36,7 +38,7 @@ export class HorarioXCursoService {
     if (!_id) return [];
     return await this.horarioXCursoModel
       .find({ curso: _id.toString() })
-      .populate(['materia', 'profesor', 'horario'])
+      .populate(['materia', 'profesor'])
       .exec();
   }
 

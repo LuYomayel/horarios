@@ -7,8 +7,9 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { EDia, ETipoProfesor, ETurno } from 'src/horario-x-curso/entities/horario-x-curso.entity';
 
-import { EDia, ETipoProfesor, ETurno } from '../entities/horario.entity';
+// import { EDia, ETipoProfesor, ETurno } from '../entities/horario.entity';
 
 export class CreateHorarioDto {
   @IsNumber()

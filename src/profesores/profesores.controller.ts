@@ -18,6 +18,9 @@ export class ProfesoresController {
   constructor(private readonly profesoresService: ProfesoresService) {}
 
   @Post()
+  // async create() {
+  //   return await this.profesoresService.create();
+  // }
   async create(@Body() createProfesoreDto: CreateProfesoreDto) {
     return await this.profesoresService.create(createProfesoreDto);
   }

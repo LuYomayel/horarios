@@ -19,6 +19,39 @@ export class ProfesoresService {
     return newProfesor.save();
   }
 
+  // async create(){
+  //   const nombresProfesores = [
+  //     'JUNCOS EMILIANO',
+  //     'COSTA MARIA',
+  //     'ZICHERT CRISTINA',
+  //     'MANINI FERNANDA',
+  //     'MACIEL JOSÉ',
+  //     'MARTINA MATIAS',
+  //     'JUNCOS EMILIANO'
+  //   ];
+  //   const nombresProfesoresUnicos = [...new Set(nombresProfesores)];
+  //   const profesores = nombresProfesoresUnicos.map(profe => 
+  //     {
+  //     return {
+  //       nombre: profe.split(' ')[1],
+  //       apellido: profe.split(' ')[0],
+  //       dni: 1234
+  //     }
+  //   })
+  //   console.log(profesores)
+  //   profesores.forEach(async (profe) => {
+  //     const profesor = new this.profesorModel(profe);
+  //     console.log('Profesor; ', profesor)
+  //     await profesor.save((error, documento) => {
+  //       if (error) {
+  //         console.error(error);
+  //       } else {
+  //         console.log(`Se insertó el profesor ${documento.nombre}`);
+  //       }
+  //     });
+  //   });
+  // }
+
   async findAll(params?: FilterProfesorDto): Promise<Profesor[]> {
     if (params.limit || params.offset) {
       const filters: FilterQuery<Profesor> = {};
