@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ETurno } from '../../horario-x-curso/entities/horario-x-curso.entity';
 @Schema()
 export class Curso extends Document {
   _id: string;
@@ -9,6 +10,9 @@ export class Curso extends Document {
 
   @Prop({ required: true })
   division: number;
+
+  @Prop({ required: true })
+  turno: ETurno[];
 }
 
 export const CursoSchema = SchemaFactory.createForClass(Curso);
