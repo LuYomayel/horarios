@@ -34,14 +34,6 @@ export class CreateHorarioXCursoDto {
   readonly dia: EDia;
 
   @IsNotEmpty()
-  @IsEnum(ETurno)
-  @ApiProperty({
-    description: 'Turno',
-    example: 'Turno mañana, Turno tarde, prehora,etc',
-  })
-  readonly turno: ETurno;
-
-  @IsNotEmpty()
   @IsEnum(ETipoProfesor)
   @ApiProperty({ description: 'Tipo de profesor' })
   readonly tipoProfesor: ETipoProfesor;

@@ -4,7 +4,8 @@ import { Connection, Model } from 'mongoose';
 import { CursosService } from '../cursos/cursos.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
-import { HorarioXCurso } from './entities/horario-x-curso.entity';
+import { ETurno, HorarioXCurso } from './entities/horario-x-curso.entity';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class HorarioXCursoService {
@@ -16,6 +17,19 @@ export class HorarioXCursoService {
   ) {}
   async create(createHorarioXCursoDto: CreateHorarioXCursoDto) {
     console.log('DTO: ', createHorarioXCursoDto)
+
+    const curso = await this.horarioXCursoModel
+    .findOne({
+      modulo: createHorarioXCursoDto.modulo,
+      dia: createHorarioXCursoDto.dia
+    })
+    .populate({
+      path: 'curso',
+      match: { _id: createHorarioXCursoDto.curso },
+      select: '_id'
+    })
+    .exec();
+    if(curso) throw new NotFoundException('Este curso ya tiene ese horario asignado.');
     const newHorarioXCurso = await new this.horarioXCursoModel(
       createHorarioXCursoDto,
     );
@@ -42,10 +56,13 @@ export class HorarioXCursoService {
       .exec();
   }
 
-  async findByProfesor(_id: string) {
+  async findByProfesor(_id: string, turno: ETurno) {
+
+
+
     return await this.horarioXCursoModel
-      .find({ profesor: _id.toString() })
-      .populate(['curso', 'materia', 'horario'])
+      .find({ profesor: _id.toString(), turno })
+      .populate(['curso', 'materia'])
       .exec();
   }
 

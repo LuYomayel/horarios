@@ -43,9 +43,6 @@ export class HorarioXCurso extends Document {
   modulo: number;
 
   @Prop({ required: true })
-  turno: ETurno;
-
-  @Prop({ required: true })
   dia: EDia;
 
   @Prop({ required: false })

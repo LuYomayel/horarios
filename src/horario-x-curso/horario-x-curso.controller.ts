@@ -12,6 +12,7 @@ import {
 import { HorarioXCursoService } from './horario-x-curso.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
+import { ETurno } from './entities/horario-x-curso.entity';
 
 @Controller('horario-x-curso')
 export class HorarioXCursoController {
@@ -39,9 +40,13 @@ export class HorarioXCursoController {
     return response;
   }
 
-  @Get('/profesor/:_id')
-  async findByProfesor(@Param('_id') _id: string) {
-    const response = await this.horarioXCursoService.findByProfesor(_id);
+  @Get('/profesor/:_id/:turno')
+  async findByProfesor
+    (
+      @Param('_id') _id: string,
+      @Param('turno') turno:ETurno,
+    ) {
+    const response = await this.horarioXCursoService.findByProfesor(_id, turno);
     return response;
   }
 
