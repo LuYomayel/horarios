@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
+import { ETurno } from 'src/horario-x-curso/entities/horario-x-curso.entity';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 import { Curso } from './entities/curso.entity';
@@ -28,6 +29,11 @@ export class CursosService {
     const curso = await this.cursoModel.findOne({ anio, division });
     if (!curso) return { _id: '' };
     return curso;
+  }
+
+  async findByTurno( turno: ETurno){
+    const cursos = await this.cursoModel.find( { turno: { $in: [turno] } } ).exec();
+    return cursos;
   }
 
   update(id: number, updateCursoDto: UpdateCursoDto) {

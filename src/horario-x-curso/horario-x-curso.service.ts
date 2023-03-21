@@ -58,11 +58,14 @@ export class HorarioXCursoService {
 
   async findByProfesor(_id: string, turno: ETurno) {
 
-
+    const cursosManana = await this.cursoService.findByTurno(turno);
+    console.log('Cursos: ', cursosManana)
 
     return await this.horarioXCursoModel
-      .find({ profesor: _id.toString(), turno })
-      .populate(['curso', 'materia'])
+      .find({ profesor: _id, curso: { $in: cursosManana.map(curso => curso._id.toString()) }})
+      .populate('materia')
+      .populate('profesor')
+      .populate('curso')
       .exec();
   }
 
