@@ -3,7 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+async function bootstrap() { 
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
@@ -14,7 +14,7 @@ async function bootstrap() {
       },
     }),
   );
-  const port = process.env.DATABASE_PORT || 5000;
+  const port = process.env.DATABASE_PORT || 3000;
   const config = new DocumentBuilder()
     .setTitle('API')
     .setDescription('Horarios')
