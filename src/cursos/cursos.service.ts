@@ -21,8 +21,8 @@ export class CursosService {
     return await this.cursoModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} curso`;
+  async findOne(_id: string) {
+    return await this.cursoModel.findOne( { _id } ).exec();
   }
 
   async findByAnioAndDivision(anio: number, division: number) {

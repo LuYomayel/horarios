@@ -17,17 +17,18 @@ export class HorarioXCursoService {
   ) {}
   async create(createHorarioXCursoDto: CreateHorarioXCursoDto) {
     console.log('DTO: ', createHorarioXCursoDto)
-
+    const cursosManana = await this.cursoService.findOne(createHorarioXCursoDto.curso);
     const curso = await this.horarioXCursoModel
     .findOne({
       modulo: createHorarioXCursoDto.modulo,
-      dia: createHorarioXCursoDto.dia
+      dia: createHorarioXCursoDto.dia,
+      curso: cursosManana
     })
-    .populate({
-      path: 'curso',
-      match: { _id: createHorarioXCursoDto.curso },
-      select: '_id'
-    })
+    // .populate({
+    //   path: 'curso',
+    //   match: { _id: createHorarioXCursoDto.curso },
+    //   select: '_id'
+    // })
     .exec();
     if(curso) throw new NotFoundException('Este curso ya tiene ese horario asignado.');
     const newHorarioXCurso = await new this.horarioXCursoModel(

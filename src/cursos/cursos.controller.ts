@@ -27,7 +27,7 @@ export class CursosController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.cursosService.findOne(+id);
+    return this.cursosService.findOne(id);
   }
 
   @Patch(':id')
