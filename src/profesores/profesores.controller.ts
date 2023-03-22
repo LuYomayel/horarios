@@ -13,6 +13,7 @@ import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
 import { Profesor } from './entities/profesor.entity';
+import { IProfesor } from '../interfaces';
 @Controller('profesores')
 export class ProfesoresController {
   constructor(private readonly profesoresService: ProfesoresService) {}
@@ -26,13 +27,13 @@ export class ProfesoresController {
   }
 
   @Get()
-  async findAll(@Query() params: FilterProfesorDto): Promise<Profesor[]> {
+  async findAll(@Query() params: FilterProfesorDto): Promise<IProfesor[]> {
     return await this.profesoresService.findAll(params);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profesoresService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<IProfesor> {
+    return this.profesoresService.findOne(id);
   }
 
   @Patch(':id')

@@ -6,15 +6,16 @@ import { Profesor } from './entities/profesor.entity';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
+import { IProfesor } from '../interfaces';
 
 @Injectable()
 export class ProfesoresService {
   constructor(
     @InjectModel(Profesor.name) private profesorModel: Model<Profesor>,
-    @InjectConnection() private connection: Connection,
+    // @InjectConnection() private connection: Connection,
   ) {}
 
-  async create(createProfesoreDto: CreateProfesoreDto): Promise<Profesor> {
+  async create(createProfesoreDto: CreateProfesoreDto): Promise<IProfesor> {
     const newProfesor = new this.profesorModel(createProfesoreDto);
     return newProfesor.save();
   }
@@ -52,7 +53,7 @@ export class ProfesoresService {
   //   });
   // }
 
-  async findAll(params?: FilterProfesorDto): Promise<Profesor[]> {
+  async findAll(params?: FilterProfesorDto): Promise<IProfesor[]> {
     if (params.limit || params.offset) {
       const filters: FilterQuery<Profesor> = {};
       const { limit, offset } = params;
@@ -66,8 +67,8 @@ export class ProfesoresService {
     return await this.profesorModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profesore`;
+  async findOne(_id: string): Promise<IProfesor> {
+    return await this.profesorModel.findOne({_id}).exec();
   }
 
   update(id: number, updateProfesoreDto: UpdateProfesoreDto) {

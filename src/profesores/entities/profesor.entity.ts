@@ -1,7 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { IProfesor } from '../../interfaces';
 @Schema()
-export class Profesor extends Document {
+export class Profesor extends Document implements IProfesor {
   @Prop({ required: true })
   nombre: string;
 
