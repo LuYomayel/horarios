@@ -21,8 +21,11 @@ async function bootstrap() {
     .setTitle('API')
     .setDescription('Horarios')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+  });
   SwaggerModule.setup('docs', app, document);
   app.enableCors();
   await app.listen(port).then(value => `listenin to ${port}`);

@@ -1,9 +1,24 @@
 import { Module } from '@nestjs/common';
-import { UsuariosService } from './usuarios.service';
-import { UsuariosController } from './usuarios.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
+
+import { Usuario, UsuarioSchema } from '../auth/entities/usuario.entity';
+import { UsuarioService } from './usuarios.services';
+import { UsuarioController } from './usuarios.controllers';
+import { jwtConstants } from '../auth/constants';
 
 @Module({
-  controllers: [UsuariosController],
-  providers: [UsuariosService],
+  imports: [
+    MongooseModule.forFeature([
+        { name: Usuario.name, schema: UsuarioSchema },
+      ]),
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '24h' },
+    }),
+  ],
+  providers: [UsuarioService],
+  controllers: [UsuarioController],
+  exports: [UsuarioService],
 })
-export class UsuariosModule {}
+export class UsuarioModule {} 

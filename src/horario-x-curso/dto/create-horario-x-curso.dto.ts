@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsPositive, Max, Min } from 'class-validator';
 import { EDia, ETipoProfesor, ETurno } from '../entities/horario-x-curso.entity';
-// import { EDia, ETipoProfesor, ETurno } from 'src/horarios/entities/horario.entity';
 
 export class CreateHorarioXCursoDto {
   @IsNotEmpty()

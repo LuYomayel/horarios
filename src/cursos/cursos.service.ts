@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
-import { ETurno } from 'src/horario-x-curso/entities/horario-x-curso.entity';
+import { ETurno } from '../horario-x-curso/entities/horario-x-curso.entity';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 import { Curso } from './entities/curso.entity';

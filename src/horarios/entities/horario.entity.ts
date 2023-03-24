@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { EDia, ETipoProfesor, ETurno } from 'src/horario-x-curso/entities/horario-x-curso.entity';
+import { EDia, ETipoProfesor, ETurno } from '../../horario-x-curso/entities/horario-x-curso.entity';
 // export enum ETurno {
 //   mañana = 'Mañana',
 //   tarde = 'Tarde',
