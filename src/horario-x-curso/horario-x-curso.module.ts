@@ -8,6 +8,7 @@ import {
 } from './entities/horario-x-curso.entity';
 import { CursosService } from '../cursos/cursos.service';
 import { CursosModule } from '../cursos/cursos.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CursosModule } from '../cursos/cursos.module';
       { name: HorarioXCurso.name, schema: HorarioXCursoSchema },
     ]),
     CursosModule,
+    AuthModule
   ],
   controllers: [HorarioXCursoController],
   providers: [HorarioXCursoService],

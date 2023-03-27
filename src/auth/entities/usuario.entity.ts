@@ -27,6 +27,7 @@ export class Usuario extends Document implements IUsuario {
 
   @Prop({ required: true })
   roles: ERoles[];
+  
 }
 
 export const UsuarioSchema = SchemaFactory.createForClass(Usuario);

@@ -11,8 +11,11 @@ import {
 import { CursosService } from './cursos.service';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
+import { Roles } from '../auth/roles.decorator';
+import { ERoles } from 'src/auth/entities/usuario.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard) 
 @Controller('cursos')
 export class CursosController {
   constructor(private readonly cursosService: CursosService) {}
@@ -22,7 +25,7 @@ export class CursosController {
     return this.cursosService.create(createCursoDto);
   }
   
-  // @UseGuards(JwtAuthGuard) 
+  // @Roles(ERoles.ADMIN)
   @Get()
   findAll() {
     return this.cursosService.findAll();

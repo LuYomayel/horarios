@@ -13,21 +13,29 @@ import { HorarioXCursoService } from './horario-x-curso.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
 import { ETurno } from './entities/horario-x-curso.entity';
+import { Roles } from '../auth/roles.decorator';
+import { ERoles } from 'src/auth/entities/usuario.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard) 
 @Controller('horario-x-curso')
 export class HorarioXCursoController {
   constructor(private readonly horarioXCursoService: HorarioXCursoService) {}
 
+  @Roles(ERoles.ADMIN)
   @Post()
   async create(@Body() createHorarioXCursoDto: CreateHorarioXCursoDto) {
     return await this.horarioXCursoService.create(createHorarioXCursoDto);
   }
 
+  
   @Get()
   async findAll() {
     return await this.horarioXCursoService.findAll();
   }
-
+  
+  
+  
   @Get('/curso/:anio/:division')
   async findByCurso(
     @Param('anio', ParseIntPipe) anio: number,

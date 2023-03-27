@@ -14,7 +14,17 @@ export class UsuarioService {
   ) {}
 
   async getUser(username: string): Promise<IUsuario | null> {
-    return await this.usuarioModel.findOne({nombreUsuario: username}).exec();
+    const user = await this.usuarioModel.findOne({ nombreUsuario: username }).exec();
+    console.log('User getUser:', user)
+    if (user) {
+      const { nombreUsuario, correo, roles , contrasenia} = user.toObject(); // Cambia 'user' a un objeto plano
+      return { nombreUsuario, correo, roles, contrasenia } as IUsuario; // Devuelve solo los campos necesarios
+    }
+    return null;
+
+    // return await this.usuarioModel.findOne({nombreUsuario: username})
+    //   // .select('nombreUsuario correo roles')
+    //   .exec();
   }
 
   async create(createUserDto: createUsuarioDTO): Promise<Usuario> {

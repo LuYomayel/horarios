@@ -12,11 +12,13 @@ export class AuthController {
 
   @Post('')
   async login(@Body() loginDto: loginDTO) {
+    
     const user = await this.authService.validateUser(loginDto.nombreUsuario, loginDto.contrasenia);
     if (!user) {
       throw new UnauthorizedException('Invalid username or password');
     }
     const accessToken = await this.authService.generateAccessToken(user);
     return { access_token: accessToken };
+      
   }
 }

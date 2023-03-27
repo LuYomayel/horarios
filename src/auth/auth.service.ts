@@ -10,8 +10,8 @@ export class AuthService {
     private jwtService: JwtService,
     private userService: UsuarioService
   ) {
-    console.log('jwtService: ',jwtService)
-    console.log('userService: ',userService)
+    // console.log('jwtService: ',jwtService)
+    // console.log('userService: ',userService)
   }
 
   async validateUser(username: string, password: string): Promise<IUsuario | null> {
@@ -20,11 +20,13 @@ export class AuthService {
         const { contrasenia, ...rest } = user;
         return rest;
     }
+
     return null;
   }
 
   async generateAccessToken(user: IUsuario): Promise<string> {
     const payload = { username: user.nombreUsuario, role: user.roles };
+    console.log('PAYLOAD: ', payload)
     return this.jwtService.sign(payload);
   }
 

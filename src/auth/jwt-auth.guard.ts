@@ -4,8 +4,9 @@ import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { UsuarioService } from "../usuarios/usuarios.services";
 import { InjectModel } from '@nestjs/mongoose';
-import { Usuario } from './entities/usuario.entity';
+import { ERoles, Usuario } from './entities/usuario.entity';
 import { Model } from 'mongoose';
+import { Reflector } from '@nestjs/core';
 
 
 
@@ -13,28 +14,39 @@ import { Model } from 'mongoose';
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     public authService: AuthService,
+    private reflector: Reflector,
   ){
     super();
-    console.log('AuthService:', authService);
+  }
+
+  hasRole(userRoles: ERoles[], requiredRoles: ERoles[]): boolean {
+    return requiredRoles.some((requiredRole) => userRoles.includes(requiredRole));
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('AuthService:', this.authService);
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
+    console.log('Auth header: ', authHeader)
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('auth: ', request.headers)
-      throw new UnauthorizedException('Missing or invalid token');
+      throw new UnauthorizedException('Usuario incorrecto 123.');
     }
     try {
+
+      const requiredRoles = this.reflector.get<ERoles[]>('roles', context.getHandler());
+
       const token = authHeader.substring(7);
-      // const payload = this.jwtService.verify(token);
-      // const payload = await this.authService.verifyToken(token);
-      // request.user = { username: payload.nombreUsuario, role: payload.roles };
+      const payload = await this.authService.verifyToken(token);
+      request.user = { username: payload.nombreUsuario, role: payload.roles };
+
+      if (requiredRoles && !this.hasRole(payload.roles, requiredRoles)) {
+        throw new UnauthorizedException('No tenés el permiso requerido.');
+      }
+
+      console.log('User: ', request.user)
       return true;
     } catch (e) {
-      console.log('Error canActivate: ', e)
-      throw new UnauthorizedException('Missing or invalid token');
+      console.log('Error canActivate: ', e.message)
+      throw new UnauthorizedException(e.message);
     }
   }
 
