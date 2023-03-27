@@ -6,11 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards
 } from '@nestjs/common';
 import { HorariosService } from './horarios.service';
 import { CreateHorarioDto } from './dto/create-horario.dto';
 import { UpdateHorarioDto } from './dto/update-horario.dto';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
+@UseGuards(JwtAuthGuard)
 @Controller('horarios')
 export class HorariosController {
   constructor(private readonly horariosService: HorariosService) {}

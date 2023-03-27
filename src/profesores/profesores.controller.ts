@@ -7,16 +7,24 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ProfesoresService } from './profesores.service';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
 import { Profesor } from './entities/profesor.entity';
+
+import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ERoles } from 'src/auth/entities/usuario.entity';
+
+@UseGuards(JwtAuthGuard)
 @Controller('profesores')
 export class ProfesoresController {
   constructor(private readonly profesoresService: ProfesoresService) {}
 
+  @Roles(ERoles.ADMIN)
   @Post()
   // async create() {
   //   return await this.profesoresService.create();

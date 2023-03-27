@@ -28,7 +28,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const authHeader = request.headers.authorization;
     console.log('Auth header: ', authHeader)
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Usuario incorrecto 123.');
+      throw new UnauthorizedException('Usuario incorrecto ó no iniciaste sesión');
     }
     try {
 
