@@ -53,7 +53,7 @@ export class HorarioXCursoService {
     if (!_id) return [];
     return await this.horarioXCursoModel
       .find({ curso: _id.toString() })
-      .populate(['materia', 'profesor'])
+      .populate(['materia', 'profesor', 'curso'])
       .exec();
   }
 
