@@ -6,6 +6,10 @@ import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
 import { ETurno, HorarioXCurso } from './entities/horario-x-curso.entity';
 import { NotFoundException } from '@nestjs/common';
+import * as handlebars from 'handlebars';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class HorarioXCursoService {
@@ -77,4 +81,53 @@ export class HorarioXCursoService {
   remove(id: number) {
     return `This action removes a #${id} horarioXCurso`;
   }
+
+  async generarCalendario(horarios : any[]): Promise<Buffer> {
+    const templatePath = path.join(__dirname, '../templates/calendario.hbs');
+    const source = fs.readFileSync(templatePath, 'utf8');
+    const template = handlebars.compile(source);
+    console.log('Horarios: ', horarios)
+    const html = template({ horarios });
+    handlebars.registerHelper('eachIndex', function (array, options) {
+      console.log('Array lengtt: ', array)
+      let result = '';
+      for (let i = 0; i < array.length; i++) {
+        result += options.fn(array[i], { data: { index: i } });
+      }
+      return result;
+    });
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(html);
+    const pdfBuffer = await page.pdf({ format: 'A4', landscape: true });
+    await browser.close();
+
+    return pdfBuffer;
+  }
+
+  transformData(data) {
+    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+    const result = days.map(day => {
+      const dayData = data.filter(item => item.dia === day);
+      const hours = Array.from({ length: 6 }, (_, i) => i + 1).map(hour => {
+        const hourData = dayData.find(item => item.modulo === hour);
+        if (hourData) {
+          return {
+            materia: hourData.materia.nombre,
+            profesor: `${hourData.profesor.nombre} ${hourData.profesor.apellido}`,
+            tipoProfesor: hourData.tipoProfesor,
+          };
+        }
+        return {
+          materia: '',
+          profesor: '',
+          tipoProfesor: '',
+        };
+      });
+      return { day, hours };
+    });
+  
+    return result;
+  }
+  
 }
