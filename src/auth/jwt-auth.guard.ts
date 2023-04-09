@@ -26,7 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
-    console.log('Auth header: ', authHeader)
+    // console.log('Auth header: ', authHeader)
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Usuario incorrecto ó no iniciaste sesión');
     }
@@ -42,7 +42,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         throw new UnauthorizedException('No tenés el permiso requerido.');
       }
 
-      console.log('User: ', request.user)
+      // console.log('User: ', request.user)
       return true;
     } catch (e) {
       console.log('Error canActivate: ', e.message)

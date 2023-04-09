@@ -16,25 +16,20 @@ export class HorarioXCursoService {
     private cursoService: CursosService,
   ) {}
   async create(createHorarioXCursoDto: CreateHorarioXCursoDto) {
-    console.log('DTO: ', createHorarioXCursoDto)
+    // console.log('DTO: ', createHorarioXCursoDto)
     const cursosManana = await this.cursoService.findOne(createHorarioXCursoDto.curso);
     const curso = await this.horarioXCursoModel
     .findOne({
       modulo: createHorarioXCursoDto.modulo,
       dia: createHorarioXCursoDto.dia,
-      curso: cursosManana
+      curso: cursosManana.id
     })
-    // .populate({
-    //   path: 'curso',
-    //   match: { _id: createHorarioXCursoDto.curso },
-    //   select: '_id'
-    // })
     .exec();
+    console.log('Curso encontrado: ', curso)
     if(curso) throw new NotFoundException('Este curso ya tiene ese horario asignado.');
     const newHorarioXCurso = await new this.horarioXCursoModel(
       createHorarioXCursoDto,
     );
-    console.log('new curso: ', newHorarioXCurso)
     return newHorarioXCurso.save();
   }
 
@@ -60,7 +55,7 @@ export class HorarioXCursoService {
   async findByProfesor(_id: string, turno: ETurno) {
 
     const cursosManana = await this.cursoService.findByTurno(turno);
-    console.log('Cursos: ', cursosManana)
+    // console.log('Cursos: ', cursosManana)
 
     return await this.horarioXCursoModel
       .find({ profesor: _id, curso: { $in: cursosManana.map(curso => curso._id.toString()) }})

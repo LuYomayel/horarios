@@ -39,7 +39,7 @@ const API_KEY_PROD = 'PROD1212121SA';
       useFactory: async (configService: ConfigType<typeof config>) => {
         const { connection, user, password, host, dbName } =
           configService.mongo;
-        const uri = `${connection}://${user}:${password}@${host}/${dbName}`;
+          const uri = `${connection}://${user}:${password}@${host}/${dbName}`;
         console.log(uri);
         // const uri = `${connection}://${host}:${port}`;
         // const client = new MongoClient(uri);
