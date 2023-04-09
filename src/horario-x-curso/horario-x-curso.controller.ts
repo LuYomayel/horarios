@@ -8,14 +8,16 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { HorarioXCursoService } from './horario-x-curso.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
 import { ETurno } from './entities/horario-x-curso.entity';
 import { Roles } from '../auth/roles.decorator';
-import { ERoles } from 'src/auth/entities/usuario.entity';
+import { ERoles } from '../auth/entities/usuario.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Response } from 'express';
 
 @UseGuards(JwtAuthGuard) 
 @Controller('horario-x-curso')
@@ -69,5 +71,27 @@ export class HorarioXCursoController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.horarioXCursoService.remove(+id);
+  }
+
+  @Get('descargar-horario/curso/:anio/:division')
+  async descargarHorario(
+    @Res() res: Response,
+    @Param('anio', ParseIntPipe) anio: number,
+    @Param('division') division: number,
+  ) {
+    const response = await this.horarioXCursoService.findByCurso(
+      anio,
+      division,
+    );
+    const arrayHorarios = this.horarioXCursoService.transformData(response);
+    console.log('Array: ', arrayHorarios)
+    const horarios = [
+      // Aquí debes reemplazar con tus datos de horario
+    ];
+    const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=horario.pdf');
+    res.send(pdfBuffer);
   }
 }

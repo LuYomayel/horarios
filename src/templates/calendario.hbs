@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Horario</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <table>
+  <thead>
+    <tr>
+      {{#each schedule}}
+        <th>{{this.day}}</th>
+      {{/each}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#eachIndex schedule.[0].hours}}
+      <tr>
+        {{#each ../schedule}}
+          <td>
+            {{#with (lookup this.hours @index)}}
+              <p>{{materia}}</p>
+              <p>{{profesor}}</p>
+              <p>{{tipoProfesor}}</p>
+            {{/with}}
+          </td>
+        {{/each}}
+      </tr>
+    {{/eachIndex}}
+  </tbody>
+</table>
+</body>
+</html>
