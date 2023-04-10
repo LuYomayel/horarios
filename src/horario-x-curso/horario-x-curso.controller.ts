@@ -13,7 +13,7 @@ import {
 import { HorarioXCursoService } from './horario-x-curso.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
-import { ETurno } from './entities/horario-x-curso.entity';
+import { ETurno, HorarioXCurso } from './entities/horario-x-curso.entity';
 import { Roles } from '../auth/roles.decorator';
 import { ERoles } from '../auth/entities/usuario.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -83,8 +83,9 @@ export class HorarioXCursoController {
       anio,
       division,
     );
+    
     const arrayHorarios = this.horarioXCursoService.transformData(response);
-    console.log('Array: ', arrayHorarios)
+    
     const horarios = [
       // Aquí debes reemplazar con tus datos de horario
     ];

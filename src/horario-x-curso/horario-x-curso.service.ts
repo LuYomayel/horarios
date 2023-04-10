@@ -10,6 +10,7 @@ import * as handlebars from 'handlebars';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
+import { IDTOpdf } from './dto/pdf-cursos.dto';
 
 @Injectable()
 export class HorarioXCursoService {
@@ -77,20 +78,26 @@ export class HorarioXCursoService {
     return `This action removes a #${id} horarioXCurso`;
   }
 
-  async generarCalendario(horarios : any[]): Promise<Buffer> {
+  async generarCalendario(horarios : IDTOpdf): Promise<Buffer> {
     const templatePath = path.join(__dirname, '../templates/calendario.hbs');
     const source = fs.readFileSync(templatePath, 'utf8');
     const template = handlebars.compile(source);
-    console.log('Horarios: ', horarios)
-    const html = template({ horarios });
+    handlebars.registerHelper('range', function (start, end) {
+      const result = [];
+      for (let i = start; i <= end; i++) {
+        result.push(i);
+      }
+      return result;
+    });
+    
     handlebars.registerHelper('eachIndex', function (array, options) {
-      console.log('Array lengtt: ', array)
       let result = '';
-      for (let i = 0; i < array.length; i++) {
+      for (let i = 0; i < array[0].hours.length; i++) {
         result += options.fn(array[i], { data: { index: i } });
       }
       return result;
     });
+    const html = template({ schedule: horarios.schedule, horarios: horarios.horarios, curso: horarios.curso, turno: horarios.turno });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(html);
@@ -99,12 +106,14 @@ export class HorarioXCursoService {
 
     return pdfBuffer;
   }
-
-  transformData(data) {
+  
+  transformData(data): IDTOpdf {
     const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+    const turno = data[0].curso.turno.includes(ETurno.mañana) ? ETurno.mañana : ETurno.tarde;
     const result = days.map(day => {
       const dayData = data.filter(item => item.dia === day);
-      const hours = Array.from({ length: 6 }, (_, i) => i + 1).map(hour => {
+      const cantHoras = turno == ETurno.mañana ? 5 : 6;
+      const hours = Array.from({ length: cantHoras }, (_, i) => i + 1).map(hour => {
         const hourData = dayData.find(item => item.modulo === hour);
         if (hourData) {
           return {
@@ -119,10 +128,38 @@ export class HorarioXCursoService {
           tipoProfesor: '',
         };
       });
+      if(turno == ETurno.tarde){
+        const ultElemento = hours.pop();
+        hours.unshift(ultElemento);
+      }
       return { day, hours };
     });
-  
-    return result;
+    // console.log('Turno: ', turno);
+    const horarioFinal = { horarios: this.tardeManiana(turno), schedule: result, turno, curso: `${data[0].curso.anio}° ${data[0].curso.division}°` }
+
+    console.log('horario final: ', horarioFinal)
+    return horarioFinal;
   }
   
+  tardeManiana(turno:ETurno) {
+    if(turno === ETurno.mañana) return {
+      0: '7:45-8:30',
+      1: '8:30-9:30',
+      2: '9:50-10:50',
+      3: '10:50-11:50',
+      4: '11:50-12:50'
+    }
+    else {
+      return {
+        0: 'Prehora',
+        1: '12:50-13:50',
+        2: '13:50-14:50',
+        3: '15:10-16:10',
+        4: '16:10-17:10',
+        5: '17:10-18:10' 
+      }
+    }
+  }
+
+
 }
