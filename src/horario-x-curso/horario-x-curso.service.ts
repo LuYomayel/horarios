@@ -4,7 +4,7 @@ import { Connection, Model } from 'mongoose';
 import { CursosService } from '../cursos/cursos.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
-import { ETurno, HorarioXCurso } from './entities/horario-x-curso.entity';
+import { EDia, ETurno, HorarioXCurso } from './entities/horario-x-curso.entity';
 import { NotFoundException } from '@nestjs/common';
 import * as handlebars from 'handlebars';
 import * as fs from 'fs';
@@ -108,7 +108,7 @@ export class HorarioXCursoService {
   }
   
   transformData(data): IDTOpdf {
-    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+    const days = [EDia.lunes, EDia.martes, EDia.miercoles, EDia.jueves, EDia.viernes];
     const turno = data[0].curso.turno.includes(ETurno.mañana) ? ETurno.mañana : ETurno.tarde;
     const result = days.map(day => {
       const dayData = data.filter(item => item.dia === day);
