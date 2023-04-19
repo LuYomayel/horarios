@@ -24,6 +24,23 @@ export enum ETipoProfesor {
   titular = 'Titular',
   suplente = 'Suplente',
   provisional = 'Provisional',
+  titular_interino = 'Titular Interino'
+}
+
+export enum ETurnoManana{
+  MODULO_1 = '7:30-8:30',
+  MODULO_2 = '8:30-9:30',
+  MODULO_3 = '9:50-10:50',
+  MODULO_4 = '10:50-11:50',
+  MODULO_5 = '11:50-12:50',
+}
+export enum ETurnoTarde{
+  MODULO_1 = '12:50-13:50',
+  MODULO_2 = '13:50-14:50',
+  MODULO_3 = '15:10-16:10',
+  MODULO_4 = '16:10-17:10',
+  MODULO_5 = '17:10-18:10',
+  MODULO_PREHORA = 'Prehora'
 }
 
 @Schema()
@@ -47,6 +64,21 @@ export class HorarioXCurso extends Document {
 
   @Prop({ required: false })
   tipoProfesor: ETipoProfesor;
+
+  @Prop({ required: false })
+  arrayProfesores?: {
+    profesor: Profesor;
+    tipoProfesor: ETipoProfesor
+  }[]
 }
 
 export const HorarioXCursoSchema = SchemaFactory.createForClass(HorarioXCurso);
+
+HorarioXCursoSchema.set('toObject', { virtuals: true });
+
+HorarioXCursoSchema.virtual('arrayProfesores.profesor', {
+  ref: Profesor.name,
+  localField: 'arrayProfesores.profesor',
+  foreignField: '_id',
+  justOne: true,
+});

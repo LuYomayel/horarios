@@ -4,13 +4,14 @@ import { Connection, Model } from 'mongoose';
 import { CursosService } from '../cursos/cursos.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
-import { EDia, ETurno, HorarioXCurso } from './entities/horario-x-curso.entity';
+import { EDia, ETurno, ETurnoManana, ETurnoTarde, HorarioXCurso } from './entities/horario-x-curso.entity';
 import { NotFoundException } from '@nestjs/common';
 import * as handlebars from 'handlebars';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 import { IDTOpdf } from './dto/pdf-cursos.dto';
+import { Profesor } from 'src/profesores/entities/profesor.entity';
 
 @Injectable()
 export class HorarioXCursoService {
@@ -39,9 +40,27 @@ export class HorarioXCursoService {
   }
 
   async findAll() {
+
+    // const horarios = await this.horarioXCursoModel.find().populate(['materia', 'profesor', 'curso']);
+    // const mapeados = horarios.map( result => { return {tipoProfesor: result.tipoProfesor, profesor: result.profesor._id, id: result.id} })
+    // horarios.forEach( async (result) => {
+    //   mapeados.forEach( maped => {
+    //     if(maped.id == result.id){
+    //       result.arrayProfesores = [{tipoProfesor: maped.tipoProfesor, profesor: maped.profesor}]
+    //     }
+    //   })
+    //   await this.horarioXCursoModel.findByIdAndUpdate(result.id, result)
+    // })
+    // console.log('Horarios: ', horarios)
+
+    
+
     return await this.horarioXCursoModel
       .find()
-      .populate(['materia', 'profesor', 'curso'])
+      .populate('materia')
+      .populate('profesor')
+      .populate('curso')
+      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
       .exec();
   }
 
@@ -53,7 +72,10 @@ export class HorarioXCursoService {
     if (!_id) return [];
     return await this.horarioXCursoModel
       .find({ curso: _id.toString() })
-      .populate(['materia', 'profesor', 'curso'])
+      .populate('materia')
+      .populate('profesor')
+      .populate('curso')
+      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
       .exec();
   }
 
@@ -67,11 +89,15 @@ export class HorarioXCursoService {
       .populate('materia')
       .populate('profesor')
       .populate('curso')
+      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
       .exec();
   }
 
-  update(id: number, updateHorarioXCursoDto: UpdateHorarioXCursoDto) {
-    return `This action updates a #${id} horarioXCurso`;
+  async update(updateHorarioXCursoDto: UpdateHorarioXCursoDto) {
+    
+    const horarioCurso = await this.horarioXCursoModel.findById(updateHorarioXCursoDto._id);
+    if(!horarioCurso) throw new NotFoundException('Horario no encontrado.');
+    return await this.horarioXCursoModel.findByIdAndUpdate(updateHorarioXCursoDto._id, updateHorarioXCursoDto)
   }
 
   remove(id: number) {
@@ -143,20 +169,20 @@ export class HorarioXCursoService {
   
   tardeManiana(turno:ETurno) {
     if(turno === ETurno.mañana) return {
-      0: '7:45-8:30',
-      1: '8:30-9:30',
-      2: '9:50-10:50',
-      3: '10:50-11:50',
-      4: '11:50-12:50'
+      0: ETurnoManana.MODULO_1,
+      1: ETurnoManana.MODULO_2,
+      2: ETurnoManana.MODULO_3,
+      3: ETurnoManana.MODULO_4,
+      4: ETurnoManana.MODULO_5,
     }
     else {
       return {
-        0: 'Prehora',
-        1: '12:50-13:50',
-        2: '13:50-14:50',
-        3: '15:10-16:10',
-        4: '16:10-17:10',
-        5: '17:10-18:10' 
+        0: ETurnoTarde.MODULO_PREHORA,
+        1: ETurnoTarde.MODULO_1,
+        2: ETurnoTarde.MODULO_2,
+        3: ETurnoTarde.MODULO_3,
+        4: ETurnoTarde.MODULO_4,
+        5: ETurnoTarde.MODULO_5,
       }
     }
   }

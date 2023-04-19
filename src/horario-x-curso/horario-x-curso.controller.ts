@@ -9,6 +9,8 @@ import {
   ParseIntPipe,
   UseGuards,
   Res,
+  Put,
+  Query,
 } from '@nestjs/common';
 import { HorarioXCursoService } from './horario-x-curso.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
@@ -19,7 +21,7 @@ import { ERoles } from '../auth/entities/usuario.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Response } from 'express';
 
-@UseGuards(JwtAuthGuard) 
+// @UseGuards(JwtAuthGuard) 
 @Controller('horario-x-curso')
 export class HorarioXCursoController {
   constructor(private readonly horarioXCursoService: HorarioXCursoService) {}
@@ -60,12 +62,12 @@ export class HorarioXCursoController {
     return response;
   }
 
-  @Patch(':id')
+  @Put()
   update(
-    @Param('id') id: string,
+    // @Param('id') id: string,
     @Body() updateHorarioXCursoDto: UpdateHorarioXCursoDto,
   ) {
-    return this.horarioXCursoService.update(+id, updateHorarioXCursoDto);
+    return this.horarioXCursoService.update(updateHorarioXCursoDto);
   }
 
   @Delete(':id')
@@ -83,12 +85,7 @@ export class HorarioXCursoController {
       anio,
       division,
     );
-    
     const arrayHorarios = this.horarioXCursoService.transformData(response);
-    
-    const horarios = [
-      // Aquí debes reemplazar con tus datos de horario
-    ];
     const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
 
     res.setHeader('Content-Type', 'application/pdf');
