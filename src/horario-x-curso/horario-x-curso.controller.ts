@@ -11,6 +11,8 @@ import {
   Res,
   Put,
   Query,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { HorarioXCursoService } from './horario-x-curso.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
@@ -29,7 +31,17 @@ export class HorarioXCursoController {
   @Roles(ERoles.ADMIN)
   @Post()
   async create(@Body() createHorarioXCursoDto: CreateHorarioXCursoDto) {
-    return await this.horarioXCursoService.create(createHorarioXCursoDto);
+    try {
+      return await this.horarioXCursoService.create(createHorarioXCursoDto);
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: error.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   
@@ -71,9 +83,9 @@ export class HorarioXCursoController {
     return this.horarioXCursoService.update(updateHorarioXCursoDto);
   }
 
-  @Delete(':id')
+  @Get(':id')
   remove(@Param('id') id: string) {
-    return this.horarioXCursoService.remove(+id);
+    return this.horarioXCursoService.getByID(id);
   }
 
   @Get('descargar-horario/curso/:anio/:division')

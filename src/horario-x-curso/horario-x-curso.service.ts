@@ -42,17 +42,20 @@ export class HorarioXCursoService {
 
   async findAll() {
 
-    const horarios = await this.horarioXCursoModel.find().populate(['materia', 'profesor', 'curso']);
-    const mapeados = horarios.map( result => { return {tipoProfesor: result.tipoProfesor, profesor: result.profesor._id, id: result.id} })
-    horarios.forEach( async (result) => {
-      mapeados.forEach( maped => {
-        if(maped.id == result.id){
-          result.arrayProfesores = [{tipoProfesor: maped.tipoProfesor, profesor: maped.profesor._id.toString() }]
-        }
-      })
-      const hola = await this.horarioXCursoModel.findByIdAndUpdate(result.id, result)
-      console.log('Hola: ', hola)
-    })
+    // const horarios = await this.horarioXCursoModel
+    // .find()
+    // .exec();
+    
+    // const mapeados = horarios.map( result => { return {tipoProfesor: result.tipoProfesor, profesor: result.profesor, id: result.id} })
+    // horarios.forEach( async (result) => {
+    //   mapeados.forEach( maped => {
+    //     if(maped.id == result.id){
+    //       result.arrayProfesores = [{tipoProfesor: maped.tipoProfesor, profesor: maped.profesor.toString() }]
+    //     }
+    //   })
+    //   const hola = await this.horarioXCursoModel.findByIdAndUpdate(result.id, result)
+    //   console.log('Hola: ', hola)
+    // })
     // console.log('Horarios: ', horarios)
 
     
@@ -104,9 +107,13 @@ export class HorarioXCursoService {
     return await this.horarioXCursoModel.findByIdAndUpdate(updateHorarioXCursoDto._id, updateHorarioXCursoDto)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} horarioXCurso`;
+  async getByID(id: string) {
+    return await this.horarioXCursoModel.find({_id: id})
+      .select('arrayProfesores')
+      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
+      .exec();
   }
+  
 
   async generarCalendario(horarios : IDTOpdf): Promise<Buffer> {
     const templatePath = path.join(__dirname, '../templates/calendario.hbs');
