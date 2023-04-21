@@ -4,7 +4,7 @@ import { Connection, Model } from 'mongoose';
 import { CursosService } from '../cursos/cursos.service';
 import { CreateHorarioXCursoDto } from './dto/create-horario-x-curso.dto';
 import { UpdateHorarioXCursoDto } from './dto/update-horario-x-curso.dto';
-import { EDia, ETurno, ETurnoManana, ETurnoTarde, HorarioXCurso } from './entities/horario-x-curso.entity';
+import { EDia, ETipoProfesor, ETurno, ETurnoManana, ETurnoTarde, HorarioXCurso } from './entities/horario-x-curso.entity';
 import { NotFoundException } from '@nestjs/common';
 import * as handlebars from 'handlebars';
 import * as fs from 'fs';
@@ -12,6 +12,7 @@ import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 import { IDTOpdf } from './dto/pdf-cursos.dto';
 import { Profesor } from 'src/profesores/entities/profesor.entity';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class HorarioXCursoService {
@@ -41,16 +42,17 @@ export class HorarioXCursoService {
 
   async findAll() {
 
-    // const horarios = await this.horarioXCursoModel.find().populate(['materia', 'profesor', 'curso']);
-    // const mapeados = horarios.map( result => { return {tipoProfesor: result.tipoProfesor, profesor: result.profesor._id, id: result.id} })
-    // horarios.forEach( async (result) => {
-    //   mapeados.forEach( maped => {
-    //     if(maped.id == result.id){
-    //       result.arrayProfesores = [{tipoProfesor: maped.tipoProfesor, profesor: maped.profesor}]
-    //     }
-    //   })
-    //   await this.horarioXCursoModel.findByIdAndUpdate(result.id, result)
-    // })
+    const horarios = await this.horarioXCursoModel.find().populate(['materia', 'profesor', 'curso']);
+    const mapeados = horarios.map( result => { return {tipoProfesor: result.tipoProfesor, profesor: result.profesor._id, id: result.id} })
+    horarios.forEach( async (result) => {
+      mapeados.forEach( maped => {
+        if(maped.id == result.id){
+          result.arrayProfesores = [{tipoProfesor: maped.tipoProfesor, profesor: maped.profesor._id.toString() }]
+        }
+      })
+      const hola = await this.horarioXCursoModel.findByIdAndUpdate(result.id, result)
+      console.log('Hola: ', hola)
+    })
     // console.log('Horarios: ', horarios)
 
     
@@ -73,25 +75,27 @@ export class HorarioXCursoService {
     return await this.horarioXCursoModel
       .find({ curso: _id.toString() })
       .populate('materia')
-      .populate('profesor')
+      // .populate('profesor')
       .populate('curso')
       .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
       .exec();
   }
 
   async findByProfesor(_id: string, turno: ETurno) {
-
     const cursosManana = await this.cursoService.findByTurno(turno);
-    // console.log('Cursos: ', cursosManana)
-
+    
     return await this.horarioXCursoModel
-      .find({ profesor: _id, curso: { $in: cursosManana.map(curso => curso._id.toString()) }})
-      .populate('materia')
-      .populate('profesor')
-      .populate('curso')
-      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
-      .exec();
+    // .find({ 'arrayProfesores.profesor': new mongoose.Types.ObjectId(_id), curso: { $in: cursosManana.map(curso => curso._id.toString()) } })
+    .find({ 'arrayProfesores.profesor':_id, curso: { $in: cursosManana.map(curso => curso._id.toString()) } })
+    .populate('materia')
+    .populate('curso')
+    .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
+    .exec();
   }
+  
+  
+  
+  
 
   async update(updateHorarioXCursoDto: UpdateHorarioXCursoDto) {
     

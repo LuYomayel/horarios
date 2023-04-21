@@ -66,8 +66,8 @@ export class ProfesoresService {
     return await this.profesorModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profesore`;
+  async findOne(id: string) {
+    return await this.profesorModel.find({_id: id}).exec();
   }
 
   update(id: number, updateProfesoreDto: UpdateProfesoreDto) {
