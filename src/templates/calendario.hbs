@@ -16,11 +16,8 @@
     th, td {
       text-align: center;
       padding: 8px;
-      border: 1px solid #ccc;
-    }
-
-    th {
-      background-color: #f2f2f2;
+      border: 1px solid #ccc; /* #ccc */
+      color: black;
     }
     td {
       width: 100px;
@@ -30,6 +27,26 @@
     }
     h4{
       margin:0;
+    }
+    td.celdas {
+      text-align: left;
+      padding: 8px;
+      height: 5.5rem;
+    }
+    .titular {
+      background-color: #92C9FF;
+    }
+
+    .titular-interino {
+      background-color: #FFF176;
+    }
+
+    .provisional {
+      background-color: #9EFFA3;
+    }
+
+    .suplente {
+      background-color: #FFA3A3;
     }
   </style>
 </head>
@@ -48,16 +65,16 @@
   <tbody>
     {{#eachIndex schedule}}
       <tr>
-         <td>{{lookup ../horarios @index}}</td>
+        <td>
+          {{lookup ../horarios @index}}
+        </td>
         {{#each ../schedule}}
-          
-          <td>
             {{#with (lookup this.hours @../index)}}
-              <p>{{materia}}</p>
-              <p>{{profesor}}</p>
-              <p>{{tipoProfesor}}</p>
+              <td class="celdas {{cssClass}}">
+                  {{{materia}}}
+                  {{{profesor}}}
+              </td>
             {{/with}}
-          </td>
         {{/each}}
       </tr>
     {{/eachIndex}}
