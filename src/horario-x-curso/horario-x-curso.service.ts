@@ -108,7 +108,7 @@ export class HorarioXCursoService {
   }
 
   async getByID(id: string) {
-    return await this.horarioXCursoModel.find({_id: id})
+    return await this.horarioXCursoModel.findOne({_id: id})
       .select('arrayProfesores')
       .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
       .exec();
@@ -126,25 +126,45 @@ export class HorarioXCursoService {
       }
       return result;
     });
+
+    
     
     handlebars.registerHelper('eachIndex', function (array, options) {
       let result = '';
       for (let i = 0; i < array[0].hours.length; i++) {
         result += options.fn(array[i], { data: { index: i } });
       }
+      // console.log('Result: ', result)
       return result;
     });
+
+    handlebars.registerHelper('getCssClassForProfesor', function (tipoProfesor) {
+      // console.log('Tipo profe: ', tipoProfesor)
+      switch (tipoProfesor) {
+        case 'T':
+          return 'titular';
+        case 'TI':
+          return 'titular-interino';
+        case 'P':
+          return 'provisional';
+        case 'S':
+          return 'suplente';
+        default:
+          return '';
+      }
+    });
+
     const html = template({ schedule: horarios.schedule, horarios: horarios.horarios, curso: horarios.curso, turno: horarios.turno });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(html);
-    const pdfBuffer = await page.pdf({ format: 'A4', landscape: true });
+    const pdfBuffer = await page.pdf({ format: 'A4', landscape: true, printBackground: true });
     await browser.close();
 
     return pdfBuffer;
   }
   
-  transformData(data): IDTOpdf {
+  /*transformData(data): IDTOpdf {
     const days = [EDia.lunes, EDia.martes, EDia.miercoles, EDia.jueves, EDia.viernes];
     const turno = data[0].curso.turno.includes(ETurno.mañana) ? ETurno.mañana : ETurno.tarde;
     const result = days.map(day => {
@@ -176,6 +196,69 @@ export class HorarioXCursoService {
 
     console.log('horario final: ', horarioFinal)
     return horarioFinal;
+  }*/
+
+  transformData(data): IDTOpdf {
+    const days = [EDia.lunes, EDia.martes, EDia.miercoles, EDia.jueves, EDia.viernes];
+    const turno = data[0].curso.turno.includes(ETurno.mañana) ? ETurno.mañana : ETurno.tarde;
+    const result = days.map(day => {
+      const dayData = data.filter(item => item.dia === day);
+      const cantHoras = turno == ETurno.mañana ? 5 : 6;
+      const hours = Array.from({ length: cantHoras }, (_, i) => i + 1).map(hour => {
+        const hourData = dayData.find(item => item.modulo === hour);
+        if (hourData) {
+          const profesores = hourData.arrayProfesores.map(profesorItem => {
+            return `${this.getTipoProfesor(profesorItem.tipoProfesor)}: ${profesorItem.profesor.nombre} ${profesorItem.profesor.apellido}`;
+          }).join('<br>');
+          console.log('css class:', this.getCssClassForProfesor(hourData.arrayProfesores[0].tipoProfesor), profesores);
+          return {
+            materia: `${hourData.materia.nombre} <br>`,
+            profesor: profesores,
+            tipoProfesor: hourData.tipoProfesor,
+            cssClass: this.getCssClassForProfesor(hourData.arrayProfesores[0].tipoProfesor)
+          };
+        }
+        return {
+          materia: '',
+          profesor: '',
+          tipoProfesor: '',
+          cssClass: ''
+        };
+      });
+      if(turno == ETurno.tarde){
+        const ultElemento = hours.pop();
+        hours.unshift(ultElemento);
+      }
+      return { day, hours };
+    });
+    const horarioFinal = { horarios: this.tardeManiana(turno), schedule: result, turno, curso: `${data[0].curso.anio}° ${data[0].curso.division}°` }
+  
+    // console.log('horario final: ', horarioFinal)
+    return horarioFinal;
+  }
+  
+  async delete(id: string) {
+    const me = this;
+    const eliminado = await me.horarioXCursoModel.deleteOne({_id: id}).exec();
+    console.log('Eliminado: ', eliminado)
+    return eliminado;
+  }
+
+  getCssClassForProfesor(tipoProfesor: ETipoProfesor) {
+    // console.log('Tipo profe: ', tipoProfesor)
+    switch(tipoProfesor){
+      case ETipoProfesor.provisional:
+        return 'provisional'; //verde
+      case ETipoProfesor.titular:
+        return 'titular'; //azul
+      case ETipoProfesor.suplente:
+        return 'suplente'; // rojo
+      case ETipoProfesor.titular_interino:
+        return 'titular-interino'; //amarillo
+      default:
+        console.log('Tipo profe error: ', tipoProfesor)
+        return 'Error tipo Profe'
+    }
   }
   
   tardeManiana(turno:ETurno) {
@@ -198,5 +281,19 @@ export class HorarioXCursoService {
     }
   }
 
-
+  getTipoProfesor(string: ETipoProfesor){
+    const me = this;
+    switch(string){
+      case ETipoProfesor.provisional:
+        return 'P';
+      case ETipoProfesor.titular:
+        return 'T';
+      case ETipoProfesor.suplente:
+        return 'S';
+      case ETipoProfesor.titular_interino:
+        return 'TI';
+      default:
+        return 'Error tipo Profe'
+    }
+  }
 }

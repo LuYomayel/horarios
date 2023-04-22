@@ -105,4 +105,9 @@ export class HorarioXCursoController {
     res.setHeader('Content-Disposition', 'attachment; filename=horario.pdf');
     res.send(pdfBuffer);
   }
+
+  @Delete(':id')
+  delete(@Param('id') id:string){
+    return this.horarioXCursoService.delete(id);
+  }
 }
