@@ -9,7 +9,7 @@ export class Profesor extends Document {
   apellido: string;
 
   @Prop({ required: true })
-  dni: number;
+  cuil: number;
 }
 
 export const ProfesorSchema = SchemaFactory.createForClass(Profesor);

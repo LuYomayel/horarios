@@ -1,11 +1,11 @@
-import { IsString, IsNumber, IsNotEmpty, IsPositive } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, IsPositive, Min, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProfesoreDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: `Nombre` })
-  readonly nombre: string;
+  readonly nombre: string; 
 
   @IsString()
   @IsNotEmpty()
@@ -17,5 +17,5 @@ export class CreateProfesoreDto {
   @IsPositive()
   // @isIdentityCard('es-AR')
   @ApiProperty({ description: `Dni` })
-  readonly dni: number;
+  readonly cuil: number;
 }
