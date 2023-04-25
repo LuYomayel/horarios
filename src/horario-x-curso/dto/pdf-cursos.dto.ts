@@ -4,5 +4,6 @@ export interface IDTOpdf{
     horarios: object,
     schedule: any[],
     curso?: string,
-    turno?: ETurno
+    turno?: ETurno,
+    notas?: string,
 }

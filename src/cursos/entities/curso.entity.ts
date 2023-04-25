@@ -11,6 +11,9 @@ export class Curso extends Document {
   @Prop({ required: true })
   division: number;
 
+  @Prop({ required: false })
+  notas: string;
+
   @Prop({ required: true })
   turno: ETurno[];
 }

@@ -153,8 +153,8 @@ export class HorarioXCursoService {
           return '';
       }
     });
-
-    const html = template({ schedule: horarios.schedule, horarios: horarios.horarios, curso: horarios.curso, turno: horarios.turno });
+    console.log('Horarios: ', horarios)
+    const html = template({ schedule: horarios.schedule, horarios: horarios.horarios, curso: horarios.curso, turno: horarios.turno, notas: horarios.notas });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(html);
@@ -199,6 +199,8 @@ export class HorarioXCursoService {
   }*/
 
   transformData(data): IDTOpdf {
+    const notas = data[0].curso.notas || '';
+    console.log('Notas: ', notas)
     const days = [EDia.lunes, EDia.martes, EDia.miercoles, EDia.jueves, EDia.viernes];
     const turno = data[0].curso.turno.includes(ETurno.mañana) ? ETurno.mañana : ETurno.tarde;
     const result = days.map(day => {
@@ -210,7 +212,7 @@ export class HorarioXCursoService {
           const profesores = hourData.arrayProfesores.map(profesorItem => {
             return `${this.getTipoProfesor(profesorItem.tipoProfesor)}: ${profesorItem.profesor.nombre} ${profesorItem.profesor.apellido}`;
           }).join('<br>');
-          console.log('css class:', this.getCssClassForProfesor(hourData.arrayProfesores[0].tipoProfesor), profesores);
+          // console.log('css class:', this.getCssClassForProfesor(hourData.arrayProfesores[0].tipoProfesor), profesores);
           return {
             materia: `${hourData.materia.nombre} <br>`,
             profesor: profesores,
@@ -231,7 +233,7 @@ export class HorarioXCursoService {
       }
       return { day, hours };
     });
-    const horarioFinal = { horarios: this.tardeManiana(turno), schedule: result, turno, curso: `${data[0].curso.anio}° ${data[0].curso.division}°` }
+    const horarioFinal = { horarios: this.tardeManiana(turno), schedule: result, turno, curso: `${data[0].curso.anio}° ${data[0].curso.division}°`, notas }
   
     // console.log('horario final: ', horarioFinal)
     return horarioFinal;

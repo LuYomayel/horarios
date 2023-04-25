@@ -98,6 +98,7 @@ export class HorarioXCursoController {
       anio,
       division,
     );
+    
     const arrayHorarios = this.horarioXCursoService.transformData(response);
     const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
 

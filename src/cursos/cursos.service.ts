@@ -36,8 +36,8 @@ export class CursosService {
     return cursos;
   }
 
-  update(id: number, updateCursoDto: UpdateCursoDto) {
-    return `This action updates a #${id} curso`;
+  async update(id: string, updateCursoDto: UpdateCursoDto) {
+    return await this.cursoModel.findOneAndUpdate({_id: id}, updateCursoDto)
   }
 
   remove(id: number) {

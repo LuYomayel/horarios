@@ -48,8 +48,8 @@ export class HorarioXCurso extends Document {
   @Prop({ type: Types.ObjectId, ref: Materia.name })
   materia: Materia | Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: Profesor.name })
-  profesor: Profesor | Types.ObjectId;
+  // @Prop({ type: Types.ObjectId, ref: Profesor.name })
+  // profesor: Profesor | Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: Curso.name })
   curso: Curso | Types.ObjectId;
@@ -62,8 +62,8 @@ export class HorarioXCurso extends Document {
   @Prop({ required: true })
   dia: EDia;
 
-  @Prop({ required: false })
-  tipoProfesor: ETipoProfesor;
+  // @Prop({ required: false })
+  // tipoProfesor: ETipoProfesor;
 
   @Prop({ required: false })
   arrayProfesores?: {

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum, IsMongoId, IsNumber, IsPositive, Min, Max, ValidateNested, ArrayMinSize } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsMongoId, IsNumber, IsPositive, Min, Max, ValidateNested, ArrayMinSize, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { EDia, ETipoProfesor } from '../entities/horario-x-curso.entity';
