@@ -7,7 +7,7 @@ import { jwtConstants } from './constants';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
-    console.log('Estoy aca')
+    
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -16,8 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log('Payload sub: ',payload.sub)
-    console.log('Payload user: ',payload.nombreUsuario)
     return { userId: payload.sub, username: payload.username };
   }
   

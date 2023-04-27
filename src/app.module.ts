@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProfesoresModule } from './profesores/profesores.module';
-import { HorariosModule } from './horarios/horarios.module';
 import { MateriasModule } from './materias/materias.module';
 import { DatabaseModule } from './database/database.module';
 import { environments } from './environment';
@@ -34,7 +33,6 @@ import { UsuarioModule } from './usuarios/usuarios.module';
     }),
     ProfesoresModule,
     MateriasModule,
-    HorariosModule,
     DatabaseModule,
     CursosModule,
     HorarioXCursoModule,

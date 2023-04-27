@@ -6,9 +6,7 @@ import { Usuario } from "./entities/usuario.entity";
 
 @Controller('login')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {
-    console.log('AuthService desde controller: ', authService)
-  }
+  constructor(private readonly authService: AuthService) {  }
 
   @Post('')
   async login(@Body() loginDto: loginDTO) {

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection, FilterQuery } from 'mongoose';
 
@@ -15,8 +15,11 @@ export class ProfesoresService {
   ) {}
 
   async create(createProfesoreDto: CreateProfesoreDto): Promise<Profesor> {
+    const { cuil } = createProfesoreDto;
+    const user = await this.profesorModel.findOne( { cuil } ).exec();
+    if(user) throw new NotFoundException('Ya existe un profesor con este cuil.');
     const newProfesor = new this.profesorModel(createProfesoreDto);
-    return newProfesor.save();
+    return await newProfesor.save();
   }
 
   // async create(){
