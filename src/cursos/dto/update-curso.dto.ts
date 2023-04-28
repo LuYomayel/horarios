@@ -7,7 +7,7 @@ import { ETurno } from 'src/horario-x-curso/entities/horario-x-curso.entity';
 export class UpdateCursoDto {
   @IsString({message: 'Las notas deben ser una cadena de caracteres.'})
   notas: string;
-
+/*
   @IsNumber({},{ message: 'El año debe ser un numero' })
   @IsPositive({ message: 'El año debe ser positivo'})
   @Min(1, {message: 'El año debe ser mayor o igual a 1'})
@@ -29,4 +29,5 @@ export class UpdateCursoDto {
     example: 'Turno mañana, Turno tarde, prehora,etc',
   })
   readonly turno: ETurno;
+  */
 }
