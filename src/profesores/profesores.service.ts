@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection, FilterQuery } from 'mongoose';
 
@@ -6,11 +6,13 @@ import { Profesor } from './entities/profesor.entity';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
+import { HorarioXCurso } from 'src/horario-x-curso/entities/horario-x-curso.entity';
 
 @Injectable()
 export class ProfesoresService {
   constructor(
     @InjectModel(Profesor.name) private profesorModel: Model<Profesor>,
+    @InjectModel(HorarioXCurso.name) private horarioXCursoModel: Model<HorarioXCurso>,
     @InjectConnection() private connection: Connection,
   ) {}
 
@@ -63,21 +65,31 @@ export class ProfesoresService {
         .find(filters)
         .skip(offset)
         .limit(limit)
+        .select({_v:0})
         .exec();
     }
 
-    return await this.profesorModel.find().exec();
+    return await this.profesorModel.find().select({_v:0}).exec();
   }
 
   async findOne(id: string) {
     return await this.profesorModel.find({_id: id}).exec();
   }
 
-  update(id: number, updateProfesoreDto: UpdateProfesoreDto) {
-    return `This action updates a #${id} profesore`;
+  async update(id: string, updateProfesoreDto: UpdateProfesoreDto) {
+    const profesor = await this.profesorModel.findOneAndUpdate({_id:id}, updateProfesoreDto).exec();
+    return profesor;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} profesore`;
+  async remove(id: string) {
+    const profesorEncontrado = await  this.horarioXCursoModel
+    // .find({ 'arrayProfesores.profesor': new mongoose.Types.ObjectId(_id), curso: { $in: cursosManana.map(curso => curso._id.toString()) } })
+    .find({ 'arrayProfesores.profesor': id })
+    .populate('materia')
+    .populate('curso')
+    .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
+    .exec();
+    if(profesorEncontrado.length > 0) throw new NotFoundException('Este profesor tiene horarios asignados. No se puede eliminar');
+    return await this.profesorModel.deleteOne({_id:id})
   }
 }

@@ -18,7 +18,7 @@ export class CursosService {
   }
 
   async findAll() {
-    return await this.cursoModel.find().exec();
+    return await this.cursoModel.find().select({_v:0}).exec();
   }
 
   async findOne(_id: string) {
@@ -40,7 +40,7 @@ export class CursosService {
     return await this.cursoModel.findOneAndUpdate({_id: id}, updateCursoDto)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} curso`;
+  async remove(id: string) {
+    return await this.cursoModel.findOneAndDelete({_id:id}).exec();
   }
 }

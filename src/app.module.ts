@@ -36,7 +36,7 @@ import { UsuarioModule } from './usuarios/usuarios.module';
     DatabaseModule,
     CursosModule,
     HorarioXCursoModule,
-    UsuarioModule,
+    UsuarioModule
   ],
   controllers: [AppController],
   providers: [

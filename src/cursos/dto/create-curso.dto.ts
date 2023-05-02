@@ -20,7 +20,6 @@ export class CreateCursoDto {
   readonly division: number;
 
   @IsNotEmpty({ message: 'El turno no puede estar vacío' })
-  @IsEnum(ETurno, { message: 'El turno debe ser Mañana o Tarde' })
   @IsArray({message: 'Los turnos deben estar en formato de array'})
   @ApiProperty({
     description: 'Turno',

@@ -22,7 +22,7 @@ export class UpdateCursoDto {
   @Max(6, {message: 'La división debe ser menor o igual a 6'})
   readonly division: number;
 
-  @IsEnum(ETurno, { message: 'El turno debe ser Mañana o Tarde' })
+  
   @IsArray({message: 'Los turnos deben estar en formato de array'})
   @ApiProperty({
     description: 'Turno',

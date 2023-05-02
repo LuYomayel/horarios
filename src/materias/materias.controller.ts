@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { MateriasService } from './materias.service';
 import { CreateMateriaDto } from './dto/create-materia.dto';
@@ -14,7 +15,7 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
-@Controller('materias')
+@Controller('materias') 
 export class MateriasController {
   constructor(private readonly materiasService: MateriasService) {}
 
@@ -33,13 +34,13 @@ export class MateriasController {
     return this.materiasService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateMateriaDto: UpdateMateriaDto) {
-    return this.materiasService.update(+id, updateMateriaDto);
+    return this.materiasService.update(id, updateMateriaDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.materiasService.remove(+id);
+    return this.materiasService.remove(id);
   }
 }

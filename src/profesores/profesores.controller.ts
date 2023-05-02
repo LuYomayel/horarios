@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ProfesoresService } from './profesores.service';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
@@ -43,16 +44,16 @@ export class ProfesoresController {
     return this.profesoresService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateProfesoreDto: UpdateProfesoreDto,
   ) {
-    return this.profesoresService.update(+id, updateProfesoreDto);
+    return this.profesoresService.update(id, updateProfesoreDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.profesoresService.remove(+id);
+    return this.profesoresService.remove(id);
   }
 }

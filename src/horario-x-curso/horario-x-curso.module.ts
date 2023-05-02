@@ -20,5 +20,6 @@ import { AuthModule } from '../auth/auth.module';
   ],
   controllers: [HorarioXCursoController],
   providers: [HorarioXCursoService],
+  exports: [MongooseModule]
 })
 export class HorarioXCursoModule {}
