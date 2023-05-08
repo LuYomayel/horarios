@@ -17,6 +17,8 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import config from './config';
 import { PassportModule } from '@nestjs/passport';
 import { UsuarioModule } from './usuarios/usuarios.module';
+import { EmailService } from './email/email.service';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -36,7 +38,8 @@ import { UsuarioModule } from './usuarios/usuarios.module';
     DatabaseModule,
     CursosModule,
     HorarioXCursoModule,
-    UsuarioModule
+    UsuarioModule,
+    EmailModule
   ],
   controllers: [AppController],
   providers: [
