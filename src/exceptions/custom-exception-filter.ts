@@ -6,22 +6,36 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
-
+  
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    let message: string;
+  
+    let message: any;
     if (exception instanceof HttpException) {
       let responsed: object | string = exception.getResponse();
-      message = typeof responsed === 'object' && 'message' in responsed ? (responsed as any).message : responsed;
+      if (typeof responsed === 'object') {
+        if ('message' in responsed) {
+          message = Array.isArray(responsed['message']) ? responsed['message'].join(', ') : responsed['message'];
+        } else if ('error' in responsed) {
+          message = responsed['error'];
+        } else {
+          message = JSON.stringify(responsed);
+        }
+      } else {
+        message = responsed;
+      }
     } else {
-      
       message = 'Error no especificado';
     }
-
-    console.log('Mensaje: ', exception)
+  
+    console.log('Mensaje: ', {
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      message,
+    });
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
@@ -29,4 +43,5 @@ export class CustomExceptionFilter implements ExceptionFilter {
       message,
     });
   }
+  
 }
