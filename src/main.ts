@@ -29,7 +29,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
   app.enableCors({
     origin: 'https://demo.gestion-horarios.com',
-    allowedHeaders: 'Authorization, Content-Type',
+    allowedHeaders: ['Content-Type', 'Authorization'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
   
