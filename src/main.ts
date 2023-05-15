@@ -27,7 +27,9 @@ async function bootstrap() {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   });
   SwaggerModule.setup('docs', app, document);
-  app.enableCors();
+  app.enableCors({
+    origin: 'https://demo.gestion-horarios.com'
+  });
   await app.listen(port).then(value => `listenin to ${port}`);
   console.log(`La aplicación está corriendo en el puerto ${await app.getUrl()}`);
 }
