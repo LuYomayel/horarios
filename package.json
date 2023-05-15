@@ -18,8 +18,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+
     "test:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles",
     "postbuild": "xcopy src\\templates dist\\templates /E /I /Y"
+
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -39,7 +41,11 @@
     "hbs": "^4.2.0",
     "joi": "^17.7.0",
     "mongoose": "^6.9.0",
+<<<<<<< Updated upstream
     "nodemailer": "^6.9.1",
+=======
+    "passport": "^0.6.0",
+>>>>>>> Stashed changes
     "passport-jwt": "^4.0.1",
     "puppeteer": "^19.8.0",
     "reflect-metadata": "^0.1.13",
