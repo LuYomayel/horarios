@@ -28,8 +28,11 @@ async function bootstrap() {
   });
   SwaggerModule.setup('docs', app, document);
   app.enableCors({
-    origin: 'https://demo.gestion-horarios.com'
+    origin: 'https://demo.gestion-horarios.com',
+    allowedHeaders: 'Authorization, Content-Type',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
+  
   await app.listen(port).then(value => `listenin to ${port}`);
   console.log(`La aplicación está corriendo en el puerto ${await app.getUrl()}`);
 }
