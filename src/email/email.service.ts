@@ -43,6 +43,17 @@ export class EmailService {
     await this.transporter.sendMail(mailOptions);
   }
 
+  async sendInicioSesionEmail(nombreUsuario: string): Promise<void> {
+    const mailOptions = {
+      from: 'gestionhorarios2023@gmail.com', // Your email address
+      to: 'gestionhorarios2023@gmail.com', // The recipient's email address
+      subject: 'Inicio de sesion',
+      text: `El siguiente usuario inicio sesión: ${nombreUsuario}`,
+    };
+
+    await this.transporter.sendMail(mailOptions);
+  }
+
   private async getAccessToken(): Promise<string> {
     const response = await this.oauth2Client.getAccessToken();
     return response.token;
