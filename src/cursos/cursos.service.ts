@@ -10,7 +10,6 @@ import { Curso } from './entities/curso.entity';
 export class CursosService {
   constructor(
     @InjectModel(Curso.name) private cursoModel: Model<Curso>,
-    @InjectConnection() private connection: Connection,
   ) {}
   async create(createCursoDto: CreateCursoDto) {
     const newCurso = await new this.cursoModel(createCursoDto);
