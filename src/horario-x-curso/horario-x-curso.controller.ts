@@ -89,14 +89,33 @@ export class HorarioXCursoController {
   }
 
   @Get('descargar-horario/curso/:anio/:division')
-  async descargarHorario(
+  async descargarHorarioCurso(
     @Res() res: Response,
     @Param('anio', ParseIntPipe) anio: number,
-    @Param('division') division: number,
+    @Param('division', ParseIntPipe) division: number,
   ) {
     const response = await this.horarioXCursoService.findByCurso(
       anio,
       division,
+    );
+    
+    const arrayHorarios = this.horarioXCursoService.transformData(response);
+    const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=horario.pdf');
+    res.send(pdfBuffer);
+  }
+
+  @Get('descargar-horario/profesor/:id/:turno')
+  async descargarHorarioProfesor(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Param('turno') turno: ETurno,
+  ) {
+    const response = await this.horarioXCursoService.findByProfesor(
+      id,
+      turno,
     );
     
     const arrayHorarios = this.horarioXCursoService.transformData(response);

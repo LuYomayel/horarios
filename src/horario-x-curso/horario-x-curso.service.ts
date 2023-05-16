@@ -163,40 +163,6 @@ export class HorarioXCursoService {
 
     return pdfBuffer;
   }
-  
-  /*transformData(data): IDTOpdf {
-    const days = [EDia.lunes, EDia.martes, EDia.miercoles, EDia.jueves, EDia.viernes];
-    const turno = data[0].curso.turno.includes(ETurno.mañana) ? ETurno.mañana : ETurno.tarde;
-    const result = days.map(day => {
-      const dayData = data.filter(item => item.dia === day);
-      const cantHoras = turno == ETurno.mañana ? 5 : 6;
-      const hours = Array.from({ length: cantHoras }, (_, i) => i + 1).map(hour => {
-        const hourData = dayData.find(item => item.modulo === hour);
-        if (hourData) {
-          return {
-            materia: hourData.materia.nombre,
-            profesor: `${hourData.profesor.nombre} ${hourData.profesor.apellido}`,
-            tipoProfesor: hourData.tipoProfesor,
-          };
-        }
-        return {
-          materia: '',
-          profesor: '',
-          tipoProfesor: '',
-        };
-      });
-      if(turno == ETurno.tarde){
-        const ultElemento = hours.pop();
-        hours.unshift(ultElemento);
-      }
-      return { day, hours };
-    });
-    // console.log('Turno: ', turno);
-    const horarioFinal = { horarios: this.tardeManiana(turno), schedule: result, turno, curso: `${data[0].curso.anio}° ${data[0].curso.division}°` }
-
-    console.log('horario final: ', horarioFinal)
-    return horarioFinal;
-  }*/
 
   transformData(data): IDTOpdf {
     const notas = data[0].curso.notas || '';

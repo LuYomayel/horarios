@@ -28,7 +28,7 @@ async function bootstrap() {
   });
   SwaggerModule.setup('docs', app, document);
   app.enableCors({
-    origin: 'https://demo.gestion-horarios.com',
+    origin: ['https://demo.gestion-horarios.com', 'http://localhost:4200', 'https://eesn14.gestion-horarios.com'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
