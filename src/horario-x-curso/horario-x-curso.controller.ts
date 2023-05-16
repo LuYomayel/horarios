@@ -99,7 +99,7 @@ export class HorarioXCursoController {
       division,
     );
     
-    const arrayHorarios = this.horarioXCursoService.transformData(response);
+    const arrayHorarios = this.horarioXCursoService.transformData(response, 'curso');
     const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
 
     res.setHeader('Content-Type', 'application/pdf');
@@ -118,7 +118,7 @@ export class HorarioXCursoController {
       turno,
     );
     
-    const arrayHorarios = this.horarioXCursoService.transformData(response);
+    const arrayHorarios = this.horarioXCursoService.transformData(response, 'profesor');
     const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
 
     res.setHeader('Content-Type', 'application/pdf');

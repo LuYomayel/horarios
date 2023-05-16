@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Put,
+  Res,
 } from '@nestjs/common';
 import { ProfesoresService } from './profesores.service';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
@@ -19,8 +20,9 @@ import { Profesor } from './entities/profesor.entity';
 import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ERoles } from 'src/auth/entities/usuario.entity';
+import { Response } from 'express';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('profesores')
 export class ProfesoresController {
   constructor(private readonly profesoresService: ProfesoresService) {}
@@ -33,6 +35,22 @@ export class ProfesoresController {
   async create(@Body() createProfesoreDto: CreateProfesoreDto) {
     return await this.profesoresService.create(createProfesoreDto);
   }
+
+  
+  @Get('exportar')
+exportarProfesores(
+  @Res() res: Response,
+) {
+  this.profesoresService.exportarProfesores().then((excelBuffer) => {
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=profesores.xlsx');
+    res.send(excelBuffer);
+  }).catch((error) => {
+    console.error(error);
+    res.status(500).send(error);
+  });
+}
+
 
   @Get()
   async findAll(@Query() params: FilterProfesorDto): Promise<Profesor[]> {
@@ -56,4 +74,9 @@ export class ProfesoresController {
   remove(@Param('id') id: string) {
     return this.profesoresService.remove(id);
   }
+
+  
+
+
+
 }

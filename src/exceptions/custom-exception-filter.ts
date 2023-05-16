@@ -13,6 +13,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
   
     let message: any;
+    console.log('exception: ', exception);
     if (exception instanceof HttpException) {
       let responsed: object | string = exception.getResponse();
       if (typeof responsed === 'object') {
@@ -30,12 +31,12 @@ export class CustomExceptionFilter implements ExceptionFilter {
       message = 'Error no especificado';
     }
   
-    console.log('Mensaje: ', {
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      message,
-    });
+    // console.log('Mensaje: ', {
+    //   statusCode: status,
+    //   timestamp: new Date().toISOString(),
+    //   path: request.url,
+    //   message,
+    // });
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),

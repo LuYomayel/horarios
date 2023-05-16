@@ -51,7 +51,7 @@
   </style>
 </head>
 <body>
-  <h1>Curso: {{curso}}</h1>
+  <h1>{{#if curso}}Curso: {{curso}}{{else}}Profesor: {{profesor}}{{/if}}</h1>
   <h4>Turno: {{turno}}</h4>
   <table>
   <thead>

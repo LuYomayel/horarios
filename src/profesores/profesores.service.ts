@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection, FilterQuery } from 'mongoose';
 
@@ -7,6 +7,9 @@ import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
 import { HorarioXCurso } from 'src/horario-x-curso/entities/horario-x-curso.entity';
+
+import { Workbook } from 'exceljs';
+import * as fs from 'fs';
 
 @Injectable()
 export class ProfesoresService {
@@ -92,4 +95,34 @@ export class ProfesoresService {
     if(profesorEncontrado.length > 0) throw new NotFoundException('Este profesor tiene horarios asignados. No se puede eliminar');
     return await this.profesorModel.deleteOne({_id:id})
   }
+
+  async exportarProfesores(){
+    try {
+      const profesores = await this.profesorModel.find().exec();
+
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Profesores');
+
+      worksheet.columns = [
+        { header: 'Apellido', key: 'apellido', width: 20 },
+        { header: 'Nombre', key: 'nombre', width: 20 },
+      ];
+      const profesoresOrdenados = profesores.sort((a, b) => a.apellido.localeCompare(b.apellido));
+      profesoresOrdenados.forEach((profesor) => {
+        worksheet.addRow({
+          nombre: profesor.nombre,
+          apellido: profesor.apellido,
+        });
+      });
+
+      const excelBuffer = await workbook.xlsx.writeBuffer();
+      
+      return excelBuffer;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error al exportar los profesores a Excel');
+    }
+    
+  }
+
 }

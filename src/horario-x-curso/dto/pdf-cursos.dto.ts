@@ -6,4 +6,5 @@ export interface IDTOpdf{
     curso?: string,
     turno?: ETurno,
     notas?: string,
+    profesorElegido?: string,
 }

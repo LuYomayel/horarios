@@ -32,7 +32,7 @@ export class HorarioXCursoService {
       curso: cursosManana.id
     })
     .exec();
-    console.log('Curso encontrado: ', curso)
+    // console.log('Curso encontrado: ', curso)
     if(curso) throw new NotFoundException('Este curso ya tiene ese horario asignado.');
     const newHorarioXCurso = await new this.horarioXCursoModel(
       createHorarioXCursoDto,
@@ -153,7 +153,7 @@ export class HorarioXCursoService {
           return '';
       }
     });
-    console.log('Horarios: ', horarios)
+    // console.log('Horarios: ', horarios)
     const html = template({ schedule: horarios.schedule, horarios: horarios.horarios, curso: horarios.curso, turno: horarios.turno, notas: horarios.notas });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -164,9 +164,23 @@ export class HorarioXCursoService {
     return pdfBuffer;
   }
 
-  transformData(data): IDTOpdf {
+  transformData(data, tipoHorario: string): IDTOpdf {
     const notas = data[0].curso.notas || '';
-    console.log('Notas: ', notas)
+    let curso: (string |undefined) = undefined;
+    let profesor: (string |undefined) = undefined;
+    if(tipoHorario == 'profesor'){
+      const masFrecuente = this.masFrecuente(data);
+      profesor = `${masFrecuente.apellido}, ${masFrecuente.nombre}`;
+      // profesor = this.masFrecuente(data);
+    }
+    if(tipoHorario == 'curso'){
+      curso = `${data[0].curso.anio}° ${data[0].curso.division}°`;
+      
+    }
+    console.log( 'Profesor: ', profesor)
+    console.log( 'curso: ', curso)
+
+
     const days = [EDia.lunes, EDia.martes, EDia.miercoles, EDia.jueves, EDia.viernes];
     const turno = data[0].curso.turno.includes(ETurno.mañana) ? ETurno.mañana : ETurno.tarde;
     const result = days.map(day => {
@@ -199,9 +213,16 @@ export class HorarioXCursoService {
       }
       return { day, hours };
     });
-    const horarioFinal = { horarios: this.tardeManiana(turno), schedule: result, turno, curso: `${data[0].curso.anio}° ${data[0].curso.division}°`, notas }
+    const horarioFinal = { 
+      horarios: this.tardeManiana(turno), 
+      schedule: result, 
+      turno, 
+      curso, 
+      notas,
+      profesorElegido: profesor
+    }
   
-    // console.log('horario final: ', horarioFinal)
+    console.log('horario final: ', horarioFinal)
     return horarioFinal;
   }
   
@@ -263,5 +284,59 @@ export class HorarioXCursoService {
       default:
         return 'Error tipo Profe'
     }
+  }
+
+  masFrecuente(data: any){
+    let freqCount = {};
+
+    // Contar la frecuencia de cada profesor
+    for (let i = 0; i < data.length; i++) {
+        let arrayProfesores = data[i].arrayProfesores;
+
+        for (let j = 0; j < arrayProfesores.length; j++) {
+            let profesorId = arrayProfesores[j].profesor.id; // Use the id as the key
+
+            if (freqCount[profesorId]) {
+                freqCount[profesorId]++;
+            } else {
+                freqCount[profesorId] = 1;
+            }
+        }
+    }
+
+    // Encontrar el profesor más frecuente
+    let maxCount = 0;
+    let mostFrequentProfesorId = null;
+    for (let profesorId in freqCount) {
+        if (freqCount[profesorId] > maxCount) {
+            maxCount = freqCount[profesorId];
+            mostFrequentProfesorId = profesorId;
+        }
+    }
+
+    // Now you can find the most frequent professor in your data
+    let mostFrequentProfesor = null;
+    for (let i = 0; i < data.length; i++) {
+        let arrayProfesores = data[i].arrayProfesores;
+
+        for (let j = 0; j < arrayProfesores.length; j++) {
+            if (arrayProfesores[j].profesor.id === mostFrequentProfesorId) {
+                mostFrequentProfesor = arrayProfesores[j].profesor;
+                break;
+            }
+        }
+
+        if (mostFrequentProfesor) {
+            break;
+        }
+    }
+
+    // if (mostFrequentProfesor) {
+    //     console.log('Profesor: ', mostFrequentProfesor.nombre, mostFrequentProfesor.apellido);
+    // } else {
+    //     console.log('No se encontró el profesor más frecuente');
+    // }
+
+    return mostFrequentProfesor;
   }
 }
