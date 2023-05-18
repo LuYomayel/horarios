@@ -32,8 +32,10 @@ export class HorarioXCursoService {
       curso: cursosManana.id
     })
     .exec();
-    // console.log('Curso encontrado: ', curso)
+    console.log('Curso encontrado: ', curso)
     if(curso) throw new NotFoundException('Este curso ya tiene ese horario asignado.');
+
+    
     const newHorarioXCurso = await new this.horarioXCursoModel(
       createHorarioXCursoDto,
     );

@@ -37,6 +37,11 @@ export class CursosController {
     return this.cursosService.findOne(id);
   }
 
+  // @Get('horario-x-cursoExistente/:id')
+  // cursoExistente(@Param('id') id: string) {
+  //   return this.cursosService.findOne(id);
+  // }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() updateCursoDto: UpdateCursoDto) {
     return this.cursosService.update(id, updateCursoDto);

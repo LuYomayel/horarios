@@ -71,7 +71,6 @@ export class HorarioXCursoController {
       @Param('turno') turno:ETurno,
     ) {
     const response = await this.horarioXCursoService.findByProfesor(_id, turno);
-    console.log('Response: ', response)
     return response;
   }
 
