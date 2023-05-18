@@ -21,7 +21,7 @@ import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ERoles } from '../auth/entities/usuario.entity';
 import { Response } from 'express';
-import { EDia, ETurno } from '../horario-x-curso/entities/horario-x-curso.entity';
+import { EDia, ETipoProfesor, ETurno } from '../horario-x-curso/entities/horario-x-curso.entity';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('profesores')
@@ -43,6 +43,23 @@ export class ProfesoresController {
     @Res() res: Response,
   ) {
     this.profesoresService.exportarProfesores().then((excelBuffer) => {
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', 'attachment; filename=profesores.xlsx');
+      res.send(excelBuffer);
+    }).catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+  }
+
+  @Get('exportar/tipoProfesor/:tipoProfesor')
+  exportarProfesoresTipo(
+    @Res() res: Response,
+    @Param('tipoProfesor') tipoProfesor: ETipoProfesor,
+  ) {
+    // this.profesoresService.exportarProfesoresTipo(tipoProfesor);
+    // return;
+    this.profesoresService.exportarProfesoresTipo(tipoProfesor).then((excelBuffer) => {
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       res.setHeader('Content-Disposition', 'attachment; filename=profesores.xlsx');
       res.send(excelBuffer);

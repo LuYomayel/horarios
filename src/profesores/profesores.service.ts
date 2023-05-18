@@ -6,7 +6,7 @@ import { Profesor } from './entities/profesor.entity';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
-import { EDia, ETurno, HorarioXCurso } from '../horario-x-curso/entities/horario-x-curso.entity';
+import { EDia, ETipoProfesor, ETurno, HorarioXCurso } from '../horario-x-curso/entities/horario-x-curso.entity';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'fs';
@@ -132,4 +132,46 @@ export class ProfesoresService {
     
   }
 
+  async exportarProfesoresTipo(tipoProfesor: ETipoProfesor){
+    try {
+      const profesoresEncontrados = await this.horarioXCursoModel.find({ 'arrayProfesores.tipoProfesor':tipoProfesor })
+      .populate('materia')
+      .populate('curso')
+      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
+      .exec();
+      console.log('Profesores encontrados: ', profesoresEncontrados.length)
+      
+      // return profesoresEncontrados;
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Profesores');
+
+      worksheet.columns = [
+        { header: 'Apellido', key: 'apellido', width: 20 },
+        { header: 'Nombre', key: 'nombre', width: 20 },
+        { header: 'Curso', key: 'curso', width: 20 },
+        { header: 'Materia', key: 'materia', width: 20 },
+        { header: 'Situacion De Revista', key: 'tipoProfesor', width: 20 },
+      ];
+      // const profesoresOrdenados = profesores.sort((a, b) => a.apellido.localeCompare(b.apellido));
+      profesoresEncontrados.forEach((horario:any) => {
+        horario.arrayProfesores.forEach((profe, index) => {
+          if(profe.tipoProfesor === tipoProfesor)
+          worksheet.addRow({
+            nombre: horario.arrayProfesores[index].profesor.nombre,
+            apellido: horario.arrayProfesores[index].profesor.apellido,
+            curso: `${horario.curso.anio}° ${horario.curso.division}°`,
+            materia: horario.materia.nombre,
+            tipoProfesor: horario.arrayProfesores[index].tipoProfesor,
+          });
+        });
+      });
+
+      const excelBuffer = await workbook.xlsx.writeBuffer();
+      
+      return excelBuffer;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error al exportar los profesores a Excel');
+    }
+  }
 }
