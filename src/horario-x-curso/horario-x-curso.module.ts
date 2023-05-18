@@ -6,8 +6,6 @@ import {
   HorarioXCurso,
   HorarioXCursoSchema,
 } from './entities/horario-x-curso.entity';
-import { CursosService } from '../cursos/cursos.service';
-import { CursosModule } from '../cursos/cursos.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
@@ -15,11 +13,10 @@ import { AuthModule } from '../auth/auth.module';
     MongooseModule.forFeature([
       { name: HorarioXCurso.name, schema: HorarioXCursoSchema },
     ]),
-    CursosModule,
     AuthModule
   ],
   controllers: [HorarioXCursoController],
   providers: [HorarioXCursoService],
-  exports: [MongooseModule]
+  exports: [MongooseModule, HorarioXCursoService]
 })
 export class HorarioXCursoModule {}

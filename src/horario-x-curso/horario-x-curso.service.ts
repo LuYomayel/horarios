@@ -20,20 +20,19 @@ export class HorarioXCursoService {
     @InjectModel(HorarioXCurso.name)
     private horarioXCursoModel: Model<HorarioXCurso>,
     @InjectConnection() private connection: Connection,
-    private cursoService: CursosService,
   ) {}
   async create(createHorarioXCursoDto: CreateHorarioXCursoDto) {
     // console.log('DTO: ', createHorarioXCursoDto)
-    const cursosManana = await this.cursoService.findOne(createHorarioXCursoDto.curso);
-    const curso = await this.horarioXCursoModel
-    .findOne({
-      modulo: createHorarioXCursoDto.modulo,
-      dia: createHorarioXCursoDto.dia,
-      curso: cursosManana.id
-    })
-    .exec();
-    console.log('Curso encontrado: ', curso)
-    if(curso) throw new NotFoundException('Este curso ya tiene ese horario asignado.');
+    // const cursosManana = await this.cursoService.findOne(createHorarioXCursoDto.curso);
+    // const curso = await this.horarioXCursoModel
+    // .findOne({
+    //   modulo: createHorarioXCursoDto.modulo,
+    //   dia: createHorarioXCursoDto.dia,
+    //   curso: cursosManana.id
+    // })
+    // .exec();
+    
+    // if(curso) throw new NotFoundException('Este curso ya tiene ese horario asignado.');
 
     
     const newHorarioXCurso = await new this.horarioXCursoModel(
@@ -70,37 +69,6 @@ export class HorarioXCursoService {
       .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
       .exec();
   }
-
-  async findByCurso(anio: number, division: number) {
-    const { _id } = await this.cursoService.findByAnioAndDivision(
-      anio,
-      division,
-    );
-    if (!_id) return [];
-    return await this.horarioXCursoModel
-      .find({ curso: _id.toString() })
-      .populate('materia')
-      // .populate('profesor')
-      .populate('curso')
-      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
-      .exec();
-  }
-
-  async findByProfesor(_id: string, turno: ETurno) {
-    const cursosManana = await this.cursoService.findByTurno(turno);
-    
-    return await this.horarioXCursoModel
-    // .find({ 'arrayProfesores.profesor': new mongoose.Types.ObjectId(_id), curso: { $in: cursosManana.map(curso => curso._id.toString()) } })
-    .find({ 'arrayProfesores.profesor':_id, curso: { $in: cursosManana.map(curso => curso._id.toString()) } })
-    .populate('materia')
-    .populate('curso')
-    .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
-    .exec();
-  }
-  
-  
-  
-  
 
   async update(updateHorarioXCursoDto: UpdateHorarioXCursoDto) {
     

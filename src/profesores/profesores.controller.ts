@@ -21,7 +21,7 @@ import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ERoles } from '../auth/entities/usuario.entity';
 import { Response } from 'express';
-import { ETurno } from '../horario-x-curso/entities/horario-x-curso.entity';
+import { EDia, ETurno } from '../horario-x-curso/entities/horario-x-curso.entity';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('profesores')
@@ -52,13 +52,14 @@ export class ProfesoresController {
     });
   }
 
-  @Get('horario-x-cursoExistente/:id/:turno/:modulo')
+  @Get('horario-x-cursoExistente/:id/:idCurso/:modulo/:dia')
   horarioExistente(
     @Param('id') id: string,
-    @Param('turno') turno: ETurno,
-    @Param('modulo') modulo: number
+    @Param('idCurso') idCurso: string,
+    @Param('modulo') modulo: number,
+    @Param('dia') dia: EDia,
   ) {
-    return this.profesoresService.findHorario(id, turno, modulo);
+    return this.profesoresService.findHorario(id, idCurso, modulo, dia);
   }
 
 

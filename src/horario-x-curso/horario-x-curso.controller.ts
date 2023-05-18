@@ -49,30 +49,6 @@ export class HorarioXCursoController {
   async findAll() {
     return await this.horarioXCursoService.findAll();
   }
-  
-  
-  
-  @Get('/curso/:anio/:division')
-  async findByCurso(
-    @Param('anio', ParseIntPipe) anio: number,
-    @Param('division') division: number,
-  ) {
-    const response = await this.horarioXCursoService.findByCurso(
-      anio,
-      division,
-    );
-    return response;
-  }
-
-  @Get('/profesor/:_id/:turno')
-  async findByProfesor
-    (
-      @Param('_id') _id: string,
-      @Param('turno') turno:ETurno,
-    ) {
-    const response = await this.horarioXCursoService.findByProfesor(_id, turno);
-    return response;
-  }
 
   @Put()
   update(
@@ -85,44 +61,6 @@ export class HorarioXCursoController {
   @Get(':id')
   remove(@Param('id') id: string) {
     return this.horarioXCursoService.getByID(id);
-  }
-
-  @Get('descargar-horario/curso/:anio/:division')
-  async descargarHorarioCurso(
-    @Res() res: Response,
-    @Param('anio', ParseIntPipe) anio: number,
-    @Param('division', ParseIntPipe) division: number,
-  ) {
-    const response = await this.horarioXCursoService.findByCurso(
-      anio,
-      division,
-    );
-    
-    const arrayHorarios = this.horarioXCursoService.transformData(response, 'curso');
-    const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=horario.pdf');
-    res.send(pdfBuffer);
-  }
-
-  @Get('descargar-horario/profesor/:id/:turno')
-  async descargarHorarioProfesor(
-    @Res() res: Response,
-    @Param('id') id: string,
-    @Param('turno') turno: ETurno,
-  ) {
-    const response = await this.horarioXCursoService.findByProfesor(
-      id,
-      turno,
-    );
-    
-    const arrayHorarios = this.horarioXCursoService.transformData(response, 'profesor');
-    const pdfBuffer = await this.horarioXCursoService.generarCalendario(arrayHorarios);
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=horario.pdf');
-    res.send(pdfBuffer);
   }
 
   @Delete(':id')

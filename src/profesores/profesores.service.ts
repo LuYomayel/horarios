@@ -6,7 +6,7 @@ import { Profesor } from './entities/profesor.entity';
 import { CreateProfesoreDto } from './dto/create-profesor.dto';
 import { UpdateProfesoreDto } from './dto/update-profesor.dto';
 import { FilterProfesorDto } from './dto/filter-profesor.dto';
-import { ETurno, HorarioXCurso } from '../horario-x-curso/entities/horario-x-curso.entity';
+import { EDia, ETurno, HorarioXCurso } from '../horario-x-curso/entities/horario-x-curso.entity';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'fs';
@@ -79,9 +79,9 @@ export class ProfesoresService {
     return await this.profesorModel.find({_id: id}).exec();
   }
 
-  async findHorario(_id: string, turno: ETurno, modulo: number) {
-    const profesorEncontrado = await this.horarioXCursoModel.findOne({ turno, modulo, 'arrayProfesores.profesor': _id }).exec();
-    console.log('Entre', profesorEncontrado, turno, modulo, _id)
+  async findHorario(_id: string, idCurso: string, modulo: number, dia: EDia) {
+    const profesorEncontrado = await this.horarioXCursoModel.findOne({ curso: idCurso, modulo, dia, 'arrayProfesores.profesor': _id }).exec();
+    console.log('Entre', dia, idCurso, modulo, _id)
     if(profesorEncontrado) throw new NotFoundException('El profesor ya tiene un horario asignado en este turno y módulo');
     else return false;
   }
