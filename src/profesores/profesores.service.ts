@@ -135,12 +135,23 @@ export class ProfesoresService {
   async exportarProfesoresTipo(tipoProfesor: ETipoProfesor){
     try {
       const profesoresEncontrados = await this.horarioXCursoModel.find({ 'arrayProfesores.tipoProfesor':tipoProfesor })
-      .populate('materia')
-      .populate('curso')
-      .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
-      .exec();
-      console.log('Profesores encontrados: ', profesoresEncontrados.length)
+        .populate('materia')
+        .populate('curso')
+        .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
+        .exec();
+      console.log('Profesores encontrados: ', profesoresEncontrados)
       
+      const arrayProfesores = [];
+      profesoresEncontrados.forEach((horario:any) => {
+        const profe = arrayProfesores.some( hora => hora.curso.id === horario.curso.id && hora.materia.id === horario.materia.id);
+        
+        if(!profe){
+          arrayProfesores.push({ 
+            curso: horario.curso, 
+            materia: horario.materia, 
+            arrayProfesores: horario.arrayProfesores.filter((profe:any) => profe.tipoProfesor === tipoProfesor) })
+        }
+      })
       // return profesoresEncontrados;
       const workbook = new Workbook();
       const worksheet = workbook.addWorksheet('Profesores');
@@ -153,7 +164,7 @@ export class ProfesoresService {
         { header: 'Situacion De Revista', key: 'tipoProfesor', width: 20 },
       ];
       // const profesoresOrdenados = profesores.sort((a, b) => a.apellido.localeCompare(b.apellido));
-      profesoresEncontrados.forEach((horario:any) => {
+      arrayProfesores.forEach((horario:any) => {
         horario.arrayProfesores.forEach((profe, index) => {
           if(profe.tipoProfesor === tipoProfesor)
           worksheet.addRow({
