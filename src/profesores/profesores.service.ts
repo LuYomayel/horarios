@@ -94,12 +94,12 @@ export class ProfesoresService {
   async remove(id: string) {
     const profesorEncontrado = await  this.horarioXCursoModel
     // .find({ 'arrayProfesores.profesor': new mongoose.Types.ObjectId(_id), curso: { $in: cursosManana.map(curso => curso._id.toString()) } })
-    .find({ 'arrayProfesores.profesor': id })
+    .findOne({ 'arrayProfesores.profesor': id })
     .populate('materia')
     .populate('curso')
     .populate({ path: 'arrayProfesores.profesor', model: Profesor.name })
     .exec();
-    if(profesorEncontrado.length > 0) throw new NotFoundException('Este profesor tiene horarios asignados. No se puede eliminar');
+    if(profesorEncontrado) throw new NotFoundException('Este profesor tiene horarios asignados. No se puede eliminar');
     return await this.profesorModel.deleteOne({_id:id})
   }
 

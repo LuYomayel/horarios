@@ -34,11 +34,11 @@ export class MateriasService {
   async remove(id: string) {
     const materiaEncontrada = await  this.horarioXCursoModel
     // .find({ 'arrayProfesores.profesor': new mongoose.Types.ObjectId(_id), curso: { $in: cursosManana.map(curso => curso._id.toString()) } })
-    .find({ 'materia': id })
+    .findOne({ 'materia': id })
     .populate('materia')
     .populate('curso')
     .exec();
-    if(materiaEncontrada.length > 0) throw new NotFoundException('Esta materia tiene horarios asignados. No se puede eliminar');
+    if(materiaEncontrada) throw new NotFoundException('Esta materia tiene horarios asignados. No se puede eliminar');
     return this.materiaModel.findOneAndRemove({_id:id})
   }
 }

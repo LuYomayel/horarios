@@ -79,6 +79,10 @@ export class CursosService {
   }
 
   async remove(id: string) {
-    return await this.cursoModel.findOneAndDelete({_id:id}).exec();
+    const cursoEncontrado = await  this.horarioXCursoModel
+    .findOne({ 'curso': id })
+    .exec();
+    if(cursoEncontrado) throw new NotFoundException('Este curso tiene horarios asignados. No se puede eliminar');
+    return this.cursoModel.findOneAndRemove({_id:id})
   }
 }
